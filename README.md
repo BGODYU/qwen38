@@ -27,7 +27,7 @@
 评审按此顺序即可复现全部数字：
 
 ```bash
-# 1. 环境准备：拉取官方镜像并创建容器
+# 1. 环境准备：拉取镜像并创建容器
 docker pull harbor.sourcefind.cn:5443/dcu/admin/base/custom:sglang0.5.12-K100AI-qwen3.8-0828
 bash scripts/create_container.sh          # 见 config/create_container.sh
 
