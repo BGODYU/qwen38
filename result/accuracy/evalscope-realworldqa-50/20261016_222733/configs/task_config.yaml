@@ -1,0 +1,103 @@
+agent_config: null
+analysis_report: false
+api_key: '**********'
+api_url: http://127.0.0.1:30000/v1/chat/completions
+chat_template: null
+collect_perf: true
+dataset_args: {}
+dataset_dir: /root/.cache/modelscope/hub/datasets
+dataset_hub: modelscope
+datasets:
+- real_world_qa
+debug: false
+enable_progress_tracker: false
+eval_backend: Native
+eval_batch_size: 8
+eval_config: null
+eval_type: openai_api
+evalscope_version: 1.13.0
+evaluation_identity:
+  benchmarks:
+    real_world_qa:
+      cache_source: null
+      evaluation_version: v1.0
+      fingerprint: sha256:89745312c46ced6536b5b22bf9ff9c95e9b3967049ec6918a47674a0aba37f80
+  schema_version: 1
+generation_config:
+  batch_size: 8
+  extra_body:
+    chat_template_kwargs:
+      enable_thinking: false
+  temperature: 0.0
+ignore_errors: false
+judge:
+  aggregation: mean
+  contract:
+    prompt_template: null
+    score_mapping: null
+    score_type: pattern
+    system_prompt: null
+  min_valid_judges: 1
+  models: []
+  position_swap: auto
+  repeats: 1
+  strategy: auto
+limit: 50
+model: Qwen3.8-27B-INT8-TP2-Eval
+model_args: {}
+model_id: Qwen3.8-27B-INT8-TP2-Eval
+model_task: text_generation
+no_timestamp: false
+repeats: 1
+rerun_review: false
+resolved_benchmarks:
+  real_world_qa:
+    aggregation: mean
+    dataset_hub: modelscope
+    dataset_id: lmms-lab/RealWorldQA
+    dataset_revision: null
+    default_subset: default
+    eval_split: test
+    extra_params: {}
+    few_shot_num: 0
+    few_shot_prompt_template: null
+    few_shot_random: false
+    filters: null
+    max_image_bytes: null
+    metric_list:
+    - accuracy
+    name: real_world_qa
+    primary_metric: null
+    prompt_template: 'Read the picture and solve the following problem step by step.The
+      last line of your response should be of the form "ANSWER: [ANSWER]" (without
+      quotes) where [ANSWER] is the answer to the problem.
+
+
+      {question}
+
+
+      Remember to put your answer on its own line at the end in the form "ANSWER:
+      [ANSWER]" (without quotes) where [ANSWER] is the answer to the problem, and
+      you do not need to use a \boxed command.'
+    query_template: null
+    sandbox_config: {}
+    shuffle: false
+    shuffle_choices: false
+    subset_list:
+    - default
+    system_prompt: null
+    train_split: null
+sandbox:
+  default_config: {}
+  enabled: false
+  engine: docker
+  manager_config: {}
+  pool_size: null
+sandbox_manager_config: {}
+sandbox_type: docker
+seed: 42
+stream: null
+timeout: null
+use_cache: null
+use_sandbox: false
+work_dir: /models/lipf/companion/code/results/evalscope-realworldqa-50/20261016_222733

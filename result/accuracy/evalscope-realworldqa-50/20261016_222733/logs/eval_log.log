@@ -1,0 +1,125 @@
+2026-10-16 22:27:33 - evalscope - INFO: Running with native backend
+2026-10-16 22:27:33 - evalscope - INFO: Dump task config to /models/lipf/companion/code/results/evalscope-realworldqa-50/20261016_222733/configs/task_config.yaml
+2026-10-16 22:27:33 - evalscope - INFO: {
+    "model_id": "Qwen3.8-27B-INT8-TP2-Eval",
+    "model_args": {},
+    "model_task": "text_generation",
+    "chat_template": null,
+    "datasets": [
+        "real_world_qa"
+    ],
+    "dataset_args": {},
+    "dataset_dir": "/root/.cache/modelscope/hub/datasets",
+    "dataset_hub": "modelscope",
+    "repeats": 1,
+    "eval_type": "openai_api",
+    "eval_backend": "Native",
+    "eval_config": null,
+    "limit": 50,
+    "eval_batch_size": 8,
+    "use_cache": null,
+    "rerun_review": false,
+    "work_dir": "/models/lipf/companion/code/results/evalscope-realworldqa-50/20261016_222733",
+    "no_timestamp": false,
+    "enable_progress_tracker": false,
+    "ignore_errors": false,
+    "debug": false,
+    "seed": 42,
+    "api_url": "http://127.0.0.1:30000/v1/chat/completions",
+    "api_key": "**********",
+    "timeout": null,
+    "stream": null,
+    "judge": {
+        "strategy": "auto",
+        "models": [],
+        "contract": {
+            "system_prompt": null,
+            "prompt_template": null,
+            "score_mapping": null,
+            "score_type": "pattern"
+        },
+        "repeats": 1,
+        "position_swap": "auto",
+        "aggregation": "mean",
+        "min_valid_judges": 1
+    },
+    "analysis_report": false,
+    "collect_perf": true,
+    "use_sandbox": false,
+    "sandbox_type": "docker",
+    "sandbox_manager_config": {},
+    "evalscope_version": "1.13.0",
+    "model": "Qwen3.8-27B-INT8-TP2-Eval",
+    "generation_config": {
+        "batch_size": 8,
+        "temperature": 0.0,
+        "extra_body": {
+            "chat_template_kwargs": {
+                "enable_thinking": false
+            }
+        }
+    },
+    "sandbox": {
+        "enabled": false,
+        "engine": "docker",
+        "default_config": {},
+        "manager_config": {},
+        "pool_size": null
+    },
+    "agent_config": null
+}
+2026-10-16 22:27:33 - evalscope - INFO: Start loading benchmark dataset: real_world_qa
+2026-10-16 22:27:34 - evalscope - WARNING: real_world_qa: 50 samples to evaluate (1 subset, --limit=50 per subset). Remove `--limit` for a formal evaluation.
+2026-10-16 22:27:34 - evalscope - INFO: Subsets of real_world_qa: ['default']
+2026-10-16 22:27:34 - evalscope - INFO: Loading model for prediction...
+2026-10-16 22:27:34 - evalscope - INFO: Creating model Qwen3.8-27B-INT8-TP2-Eval with eval_type=openai_api base_url=http://127.0.0.1:30000/v1/chat/completions, config={'retries': 5, 'retry_interval': 10, 'batch_size': 8, 'temperature': 0.0, 'anthropic_cache_strategy': 'evaluation', 'extra_body': {'chat_template_kwargs': {'enable_thinking': False}}}, model_args={}
+2026-10-16 22:27:35 - evalscope - INFO: Model loaded successfully.
+2026-10-16 22:28:35 - evalscope - INFO: Evaluating[real_world_qa]  44%| 22/50 [Elapsed: 01:00 < Remaining: 01:16,  2.74s/it]
+2026-10-16 22:29:36 - evalscope - INFO: Evaluating[real_world_qa]  86%| 43/50 [Elapsed: 02:01 < Remaining: 00:22,  3.28s/it]
+2026-10-16 22:30:36 - evalscope - INFO: Evaluating[real_world_qa]  98%| 49/50 [Elapsed: 03:01 < Remaining: 00:10, 10.56s/it]
+2026-10-16 22:31:36 - evalscope - INFO: Evaluating[real_world_qa]  98%| 49/50 [Elapsed: 04:01 < Remaining: 00:10, 10.56s/it]
+2026-10-16 22:32:36 - evalscope - INFO: Evaluating[real_world_qa]  98%| 49/50 [Elapsed: 05:01 < Remaining: 00:10, 10.56s/it]
+2026-10-16 22:33:36 - evalscope - INFO: Evaluating[real_world_qa]  98%| 49/50 [Elapsed: 06:01 < Remaining: 00:10, 10.56s/it]
+2026-10-16 22:34:36 - evalscope - INFO: Evaluating[real_world_qa]  98%| 49/50 [Elapsed: 07:01 < Remaining: 00:10, 10.56s/it]
+2026-10-16 22:35:36 - evalscope - INFO: Evaluating[real_world_qa]  98%| 49/50 [Elapsed: 08:01 < Remaining: 00:10, 10.56s/it]
+2026-10-16 22:36:36 - evalscope - INFO: Evaluating[real_world_qa]  98%| 49/50 [Elapsed: 09:01 < Remaining: 00:10, 10.56s/it]
+2026-10-16 22:37:36 - evalscope - INFO: Evaluating[real_world_qa]  98%| 49/50 [Elapsed: 10:01 < Remaining: 00:10, 10.56s/it]
+2026-10-16 22:38:36 - evalscope - INFO: Evaluating[real_world_qa]  98%| 49/50 [Elapsed: 11:01 < Remaining: 00:10, 10.56s/it]
+2026-10-16 22:38:55 - evalscope - INFO: Evaluating[real_world_qa] 100%| 50/50 [Elapsed: 11:20 < Remaining: 00:00, 109.74s/it]
+2026-10-16 22:38:55 - evalscope - INFO: real_world_qa: predictions complete, aggregating scores...
+2026-10-16 22:38:55 - evalscope - INFO: Aggregating scores for subset: default
+2026-10-16 22:38:55 - evalscope - INFO: Generating report...
+2026-10-16 22:38:55 - evalscope - INFO: 
+real_world_qa report table:
+┌───────────────────────────┬─────────────┬────────────┬──────────┬───────┬─────────┐
+│ Model                     │ Dataset     │ Metric     │ Subset   │   Num │ Score   │
+├───────────────────────────┼─────────────┼────────────┼──────────┼───────┼─────────┤
+│ Qwen3.8-27B-INT8-TP2-Eval │ RealWorldQA │ Accuracy ↑ │ default  │    50 │ 88%     │
+└───────────────────────────┴─────────────┴────────────┴──────────┴───────┴─────────┘ 
+
+2026-10-16 22:38:55 - evalscope - INFO: Skipping report analysis (`analysis_report=False`).
+2026-10-16 22:38:55 - evalscope - INFO: Dump report to: /models/lipf/companion/code/results/evalscope-realworldqa-50/20261016_222733/reports/Qwen3.8-27B-INT8-TP2-Eval/real_world_qa.json 
+
+2026-10-16 22:38:55 - evalscope - INFO: 
+real_world_qa perf table:
+Model                      Dataset        Num  Avg Lat    Avg TTFT    Avg TPOT    Avg Thpt      Avg In    Avg Out
+-------------------------  -----------  -----  ---------  ----------  ----------  ----------  --------  ---------
+Qwen3.8-27B-INT8-TP2-Eval  RealWorldQA     50  31.646 s   —           —           7.18 tok/s      1472        227
+
+2026-10-16 22:38:55 - evalscope - INFO: Benchmark real_world_qa evaluation finished.
+2026-10-16 22:38:55 - evalscope - INFO: Running[eval] 100%| 1/1 [Elapsed: 11:21 < Remaining: 00:00, 681.38s/benchmark]
+2026-10-16 22:38:55 - evalscope - INFO: Overall report table: 
+┌───────────────────────────┬─────────────┬────────────┬──────────┬───────┬─────────┐
+│ Model                     │ Dataset     │ Metric     │ Subset   │   Num │ Score   │
+├───────────────────────────┼─────────────┼────────────┼──────────┼───────┼─────────┤
+│ Qwen3.8-27B-INT8-TP2-Eval │ RealWorldQA │ Accuracy ↑ │ default  │    50 │ 88%     │
+└───────────────────────────┴─────────────┴────────────┴──────────┴───────┴─────────┘ 
+
+2026-10-16 22:38:55 - evalscope - INFO: Overall perf table: 
+Model                      Dataset        Num  Avg Lat    Avg TTFT    Avg TPOT    Avg Thpt      Avg In    Avg Out
+-------------------------  -----------  -----  ---------  ----------  ----------  ----------  --------  ---------
+Qwen3.8-27B-INT8-TP2-Eval  RealWorldQA     50  31.646 s   —           —           7.18 tok/s      1472        227 
+
+2026-10-16 22:38:55 - evalscope - INFO: HTML report generated: /models/lipf/companion/code/results/evalscope-realworldqa-50/20261016_222733/reports/report.html
+2026-10-16 22:38:56 - evalscope - INFO: Finished evaluation for Qwen3.8-27B-INT8-TP2-Eval on ['real_world_qa']
+2026-10-16 22:38:56 - evalscope - INFO: Output directory: /models/lipf/companion/code/results/evalscope-realworldqa-50/20261016_222733

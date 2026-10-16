@@ -1,0 +1,178 @@
+2026-10-16 21:20:57 - evalscope - INFO: Running with native backend
+2026-10-16 21:20:58 - evalscope - INFO: Dump task config to /models/lipf/companion/code/results/evalscope-gsm8k-hip67-full/20261016_212057/configs/task_config.yaml
+2026-10-16 21:20:58 - evalscope - INFO: {
+    "model_id": "Qwen3.8-27B-INT8-TP2-Eval",
+    "model_args": {},
+    "model_task": "text_generation",
+    "chat_template": null,
+    "datasets": [
+        "gsm8k"
+    ],
+    "dataset_args": {},
+    "dataset_dir": "/root/.cache/modelscope/hub/datasets",
+    "dataset_hub": "modelscope",
+    "repeats": 1,
+    "eval_type": "openai_api",
+    "eval_backend": "Native",
+    "eval_config": null,
+    "limit": null,
+    "eval_batch_size": 8,
+    "use_cache": null,
+    "rerun_review": false,
+    "work_dir": "/models/lipf/companion/code/results/evalscope-gsm8k-hip67-full/20261016_212057",
+    "no_timestamp": false,
+    "enable_progress_tracker": false,
+    "ignore_errors": false,
+    "debug": false,
+    "seed": 42,
+    "api_url": "http://127.0.0.1:30003/v1/chat/completions",
+    "api_key": "**********",
+    "timeout": null,
+    "stream": null,
+    "judge": {
+        "strategy": "auto",
+        "models": [],
+        "contract": {
+            "system_prompt": null,
+            "prompt_template": null,
+            "score_mapping": null,
+            "score_type": "pattern"
+        },
+        "repeats": 1,
+        "position_swap": "auto",
+        "aggregation": "mean",
+        "min_valid_judges": 1
+    },
+    "analysis_report": false,
+    "collect_perf": true,
+    "use_sandbox": false,
+    "sandbox_type": "docker",
+    "sandbox_manager_config": {},
+    "evalscope_version": "1.13.0",
+    "model": "Qwen3.8-27B-INT8-TP2-Eval",
+    "generation_config": {
+        "batch_size": 8,
+        "temperature": 0.0,
+        "extra_body": {
+            "chat_template_kwargs": {
+                "enable_thinking": false
+            }
+        }
+    },
+    "sandbox": {
+        "enabled": false,
+        "engine": "docker",
+        "default_config": {},
+        "manager_config": {},
+        "pool_size": null
+    },
+    "agent_config": null
+}
+2026-10-16 21:20:58 - evalscope - INFO: Start loading benchmark dataset: gsm8k
+2026-10-16 21:20:58 - evalscope - INFO: gsm8k: 1319 samples to evaluate (1 subset)
+2026-10-16 21:20:58 - evalscope - INFO: Subsets of gsm8k: ['main']
+2026-10-16 21:20:58 - evalscope - INFO: Loading model for prediction...
+2026-10-16 21:20:58 - evalscope - INFO: Creating model Qwen3.8-27B-INT8-TP2-Eval with eval_type=openai_api base_url=http://127.0.0.1:30003/v1/chat/completions, config={'retries': 5, 'retry_interval': 10, 'batch_size': 8, 'temperature': 0.0, 'anthropic_cache_strategy': 'evaluation', 'extra_body': {'chat_template_kwargs': {'enable_thinking': False}}}, model_args={}
+2026-10-16 21:20:58 - evalscope - INFO: Model loaded successfully.
+2026-10-16 21:21:58 - evalscope - INFO: Evaluating[gsm8k]   1%| 16/1319 [Elapsed: 01:00 < Remaining: 1:06:27,  3.06s/it]
+2026-10-16 21:22:58 - evalscope - INFO: Evaluating[gsm8k]   3%| 40/1319 [Elapsed: 02:00 < Remaining: 44:15,  2.08s/it]
+2026-10-16 21:23:58 - evalscope - INFO: Evaluating[gsm8k]   5%| 65/1319 [Elapsed: 03:00 < Remaining: 57:38,  2.76s/it]
+2026-10-16 21:24:58 - evalscope - INFO: Evaluating[gsm8k]   7%| 90/1319 [Elapsed: 04:00 < Remaining: 45:22,  2.22s/it]
+2026-10-16 21:25:58 - evalscope - INFO: Evaluating[gsm8k]   8%| 110/1319 [Elapsed: 05:00 < Remaining: 57:37,  2.86s/it]
+2026-10-16 21:26:58 - evalscope - INFO: Evaluating[gsm8k]  10%| 131/1319 [Elapsed: 06:00 < Remaining: 57:13,  2.89s/it]
+2026-10-16 21:27:58 - evalscope - INFO: Evaluating[gsm8k]  11%| 148/1319 [Elapsed: 07:00 < Remaining: 1:11:50,  3.68s/it]
+2026-10-16 21:28:58 - evalscope - INFO: Evaluating[gsm8k]  12%| 163/1319 [Elapsed: 08:00 < Remaining: 1:01:23,  3.19s/it]
+2026-10-16 21:29:58 - evalscope - INFO: Evaluating[gsm8k]  14%| 181/1319 [Elapsed: 09:00 < Remaining: 1:18:05,  4.12s/it]
+2026-10-16 21:30:59 - evalscope - INFO: Evaluating[gsm8k]  15%| 200/1319 [Elapsed: 10:00 < Remaining: 55:35,  2.98s/it]
+2026-10-16 21:31:59 - evalscope - INFO: Evaluating[gsm8k]  16%| 216/1319 [Elapsed: 11:00 < Remaining: 1:05:50,  3.58s/it]
+2026-10-16 21:32:59 - evalscope - INFO: Evaluating[gsm8k]  18%| 236/1319 [Elapsed: 12:01 < Remaining: 1:20:40,  4.47s/it]
+2026-10-16 21:33:59 - evalscope - INFO: Evaluating[gsm8k]  19%| 256/1319 [Elapsed: 13:01 < Remaining: 42:29,  2.40s/it]
+2026-10-16 21:34:59 - evalscope - INFO: Evaluating[gsm8k]  21%| 279/1319 [Elapsed: 14:01 < Remaining: 36:36,  2.11s/it]
+2026-10-16 21:35:59 - evalscope - INFO: Evaluating[gsm8k]  23%| 302/1319 [Elapsed: 15:01 < Remaining: 52:02,  3.07s/it]
+2026-10-16 21:36:59 - evalscope - INFO: Evaluating[gsm8k]  24%| 322/1319 [Elapsed: 16:01 < Remaining: 43:21,  2.61s/it]
+2026-10-16 21:37:59 - evalscope - INFO: Evaluating[gsm8k]  26%| 345/1319 [Elapsed: 17:01 < Remaining: 29:42,  1.83s/it]
+2026-10-16 21:38:59 - evalscope - INFO: Evaluating[gsm8k]  28%| 368/1319 [Elapsed: 18:01 < Remaining: 28:25,  1.79s/it]
+2026-10-16 21:39:59 - evalscope - INFO: Evaluating[gsm8k]  30%| 391/1319 [Elapsed: 19:01 < Remaining: 37:43,  2.44s/it]
+2026-10-16 21:40:59 - evalscope - INFO: Evaluating[gsm8k]  31%| 412/1319 [Elapsed: 20:01 < Remaining: 33:09,  2.19s/it]
+2026-10-16 21:41:59 - evalscope - INFO: Evaluating[gsm8k]  33%| 429/1319 [Elapsed: 21:01 < Remaining: 44:27,  3.00s/it]
+2026-10-16 21:43:00 - evalscope - INFO: Evaluating[gsm8k]  34%| 446/1319 [Elapsed: 22:01 < Remaining: 50:36,  3.48s/it]
+2026-10-16 21:44:00 - evalscope - INFO: Evaluating[gsm8k]  36%| 469/1319 [Elapsed: 23:01 < Remaining: 40:51,  2.88s/it]
+2026-10-16 21:45:00 - evalscope - INFO: Evaluating[gsm8k]  38%| 495/1319 [Elapsed: 24:02 < Remaining: 34:27,  2.51s/it]
+2026-10-16 21:46:00 - evalscope - INFO: Evaluating[gsm8k]  39%| 514/1319 [Elapsed: 25:02 < Remaining: 47:36,  3.55s/it]
+2026-10-16 21:47:00 - evalscope - INFO: Evaluating[gsm8k]  40%| 527/1319 [Elapsed: 26:02 < Remaining: 1:01:46,  4.68s/it]
+2026-10-16 21:48:00 - evalscope - INFO: Evaluating[gsm8k]  41%| 541/1319 [Elapsed: 27:02 < Remaining: 1:03:03,  4.86s/it]
+2026-10-16 21:49:00 - evalscope - INFO: Evaluating[gsm8k]  43%| 564/1319 [Elapsed: 28:02 < Remaining: 31:01,  2.47s/it]
+2026-10-16 21:50:00 - evalscope - INFO: Evaluating[gsm8k]  44%| 584/1319 [Elapsed: 29:02 < Remaining: 34:44,  2.84s/it]
+2026-10-16 21:51:00 - evalscope - INFO: Evaluating[gsm8k]  46%| 602/1319 [Elapsed: 30:02 < Remaining: 31:13,  2.61s/it]
+2026-10-16 21:52:00 - evalscope - INFO: Evaluating[gsm8k]  47%| 621/1319 [Elapsed: 31:02 < Remaining: 34:08,  2.93s/it]
+2026-10-16 21:53:00 - evalscope - INFO: Evaluating[gsm8k]  49%| 641/1319 [Elapsed: 32:02 < Remaining: 31:33,  2.79s/it]
+2026-10-16 21:54:00 - evalscope - INFO: Evaluating[gsm8k]  50%| 660/1319 [Elapsed: 33:02 < Remaining: 31:58,  2.91s/it]
+2026-10-16 21:55:01 - evalscope - INFO: Evaluating[gsm8k]  52%| 680/1319 [Elapsed: 34:02 < Remaining: 19:45,  1.86s/it]
+2026-10-16 21:56:01 - evalscope - INFO: Evaluating[gsm8k]  53%| 697/1319 [Elapsed: 35:02 < Remaining: 47:21,  4.57s/it]
+2026-10-16 21:57:01 - evalscope - INFO: Evaluating[gsm8k]  54%| 711/1319 [Elapsed: 36:02 < Remaining: 43:35,  4.30s/it]
+2026-10-16 21:58:01 - evalscope - INFO: Evaluating[gsm8k]  55%| 728/1319 [Elapsed: 37:03 < Remaining: 41:36,  4.22s/it]
+2026-10-16 21:59:01 - evalscope - INFO: Evaluating[gsm8k]  57%| 749/1319 [Elapsed: 38:03 < Remaining: 25:52,  2.72s/it]
+2026-10-16 22:00:01 - evalscope - INFO: Evaluating[gsm8k]  58%| 770/1319 [Elapsed: 39:03 < Remaining: 23:24,  2.56s/it]
+2026-10-16 22:01:01 - evalscope - INFO: Evaluating[gsm8k]  60%| 793/1319 [Elapsed: 40:03 < Remaining: 14:29,  1.65s/it]
+2026-10-16 22:02:01 - evalscope - INFO: Evaluating[gsm8k]  61%| 810/1319 [Elapsed: 41:03 < Remaining: 28:33,  3.37s/it]
+2026-10-16 22:03:01 - evalscope - INFO: Evaluating[gsm8k]  63%| 828/1319 [Elapsed: 42:03 < Remaining: 32:19,  3.95s/it]
+2026-10-16 22:04:01 - evalscope - INFO: Evaluating[gsm8k]  64%| 849/1319 [Elapsed: 43:03 < Remaining: 20:32,  2.62s/it]
+2026-10-16 22:05:01 - evalscope - INFO: Evaluating[gsm8k]  66%| 869/1319 [Elapsed: 44:03 < Remaining: 21:41,  2.89s/it]
+2026-10-16 22:06:01 - evalscope - INFO: Evaluating[gsm8k]  68%| 891/1319 [Elapsed: 45:03 < Remaining: 13:21,  1.87s/it]
+2026-10-16 22:07:01 - evalscope - INFO: Evaluating[gsm8k]  70%| 919/1319 [Elapsed: 46:03 < Remaining: 15:05,  2.26s/it]
+2026-10-16 22:08:02 - evalscope - INFO: Evaluating[gsm8k]  71%| 939/1319 [Elapsed: 47:03 < Remaining: 16:53,  2.67s/it]
+2026-10-16 22:09:02 - evalscope - INFO: Evaluating[gsm8k]  73%| 961/1319 [Elapsed: 48:03 < Remaining: 16:19,  2.74s/it]
+2026-10-16 22:10:02 - evalscope - INFO: Evaluating[gsm8k]  74%| 981/1319 [Elapsed: 49:04 < Remaining: 09:46,  1.73s/it]
+2026-10-16 22:11:02 - evalscope - INFO: Evaluating[gsm8k]  76%| 1001/1319 [Elapsed: 50:04 < Remaining: 14:32,  2.74s/it]
+2026-10-16 22:12:02 - evalscope - INFO: Evaluating[gsm8k]  77%| 1019/1319 [Elapsed: 51:04 < Remaining: 09:38,  1.93s/it]
+2026-10-16 22:13:02 - evalscope - INFO: Evaluating[gsm8k]  79%| 1038/1319 [Elapsed: 52:04 < Remaining: 13:22,  2.86s/it]
+2026-10-16 22:14:02 - evalscope - INFO: Evaluating[gsm8k]  80%| 1060/1319 [Elapsed: 53:04 < Remaining: 13:25,  3.11s/it]
+2026-10-16 22:15:02 - evalscope - INFO: Evaluating[gsm8k]  82%| 1083/1319 [Elapsed: 54:04 < Remaining: 09:04,  2.31s/it]
+2026-10-16 22:16:02 - evalscope - INFO: Evaluating[gsm8k]  84%| 1105/1319 [Elapsed: 55:04 < Remaining: 08:16,  2.32s/it]
+2026-10-16 22:17:02 - evalscope - INFO: Evaluating[gsm8k]  86%| 1128/1319 [Elapsed: 56:04 < Remaining: 08:21,  2.63s/it]
+2026-10-16 22:18:02 - evalscope - INFO: Evaluating[gsm8k]  87%| 1153/1319 [Elapsed: 57:04 < Remaining: 06:28,  2.34s/it]
+2026-10-16 22:19:03 - evalscope - INFO: Evaluating[gsm8k]  89%| 1174/1319 [Elapsed: 58:04 < Remaining: 07:41,  3.18s/it]
+2026-10-16 22:20:03 - evalscope - INFO: Evaluating[gsm8k]  91%| 1194/1319 [Elapsed: 59:04 < Remaining: 06:22,  3.06s/it]
+2026-10-16 22:21:03 - evalscope - INFO: Evaluating[gsm8k]  92%| 1214/1319 [Elapsed: 1:00:04 < Remaining: 04:11,  2.39s/it]
+2026-10-16 22:22:03 - evalscope - INFO: Evaluating[gsm8k]  94%| 1238/1319 [Elapsed: 1:01:05 < Remaining: 03:21,  2.49s/it]
+2026-10-16 22:23:03 - evalscope - INFO: Evaluating[gsm8k]  96%| 1261/1319 [Elapsed: 1:02:05 < Remaining: 02:28,  2.57s/it]
+2026-10-16 22:24:03 - evalscope - INFO: Evaluating[gsm8k]  97%| 1286/1319 [Elapsed: 1:03:05 < Remaining: 01:10,  2.12s/it]
+2026-10-16 22:25:03 - evalscope - INFO: Evaluating[gsm8k]  99%| 1309/1319 [Elapsed: 1:04:05 < Remaining: 00:27,  2.75s/it]
+2026-10-16 22:25:23 - evalscope - INFO: Evaluating[gsm8k] 100%| 1319/1319 [Elapsed: 1:04:25 < Remaining: 00:00,  2.47s/it]
+2026-10-16 22:25:23 - evalscope - INFO: gsm8k: predictions complete, aggregating scores...
+2026-10-16 22:25:23 - evalscope - INFO: Aggregating scores for subset: main
+2026-10-16 22:25:23 - evalscope - INFO: Generating report...
+2026-10-16 22:25:23 - evalscope - INFO: 
+gsm8k report table:
+┌───────────────────────────┬───────────┬────────────┬──────────┬───────┬─────────┐
+│ Model                     │ Dataset   │ Metric     │ Subset   │   Num │ Score   │
+├───────────────────────────┼───────────┼────────────┼──────────┼───────┼─────────┤
+│ Qwen3.8-27B-INT8-TP2-Eval │ GSM8K     │ Accuracy ↑ │ main     │  1319 │ 97.4%   │
+└───────────────────────────┴───────────┴────────────┴──────────┴───────┴─────────┘ 
+
+2026-10-16 22:25:23 - evalscope - INFO: Skipping report analysis (`analysis_report=False`).
+2026-10-16 22:25:23 - evalscope - INFO: Dump report to: /models/lipf/companion/code/results/evalscope-gsm8k-hip67-full/20261016_212057/reports/Qwen3.8-27B-INT8-TP2-Eval/gsm8k.json 
+
+2026-10-16 22:25:23 - evalscope - INFO: 
+gsm8k perf table:
+Model                      Dataset      Num  Avg Lat    Avg TTFT    Avg TPOT    Avg Thpt       Avg In    Avg Out
+-------------------------  ---------  -----  ---------  ----------  ----------  -----------  --------  ---------
+Qwen3.8-27B-INT8-TP2-Eval  GSM8K       1319  22.912 s   —           —           15.57 tok/s       689        357
+
+2026-10-16 22:25:23 - evalscope - INFO: Benchmark gsm8k evaluation finished.
+2026-10-16 22:25:23 - evalscope - INFO: Running[eval] 100%| 1/1 [Elapsed: 1:04:25 < Remaining: 00:00, 3865.80s/benchmark]
+2026-10-16 22:25:23 - evalscope - INFO: Overall report table: 
+┌───────────────────────────┬───────────┬────────────┬──────────┬───────┬─────────┐
+│ Model                     │ Dataset   │ Metric     │ Subset   │   Num │ Score   │
+├───────────────────────────┼───────────┼────────────┼──────────┼───────┼─────────┤
+│ Qwen3.8-27B-INT8-TP2-Eval │ GSM8K     │ Accuracy ↑ │ main     │  1319 │ 97.4%   │
+└───────────────────────────┴───────────┴────────────┴──────────┴───────┴─────────┘ 
+
+2026-10-16 22:25:23 - evalscope - INFO: Overall perf table: 
+Model                      Dataset      Num  Avg Lat    Avg TTFT    Avg TPOT    Avg Thpt       Avg In    Avg Out
+-------------------------  ---------  -----  ---------  ----------  ----------  -----------  --------  ---------
+Qwen3.8-27B-INT8-TP2-Eval  GSM8K       1319  22.912 s   —           —           15.57 tok/s       689        357 
+
+2026-10-16 22:25:24 - evalscope - INFO: HTML report generated: /models/lipf/companion/code/results/evalscope-gsm8k-hip67-full/20261016_212057/reports/report.html
+2026-10-16 22:25:25 - evalscope - INFO: Finished evaluation for Qwen3.8-27B-INT8-TP2-Eval on ['gsm8k']
+2026-10-16 22:25:25 - evalscope - INFO: Output directory: /models/lipf/companion/code/results/evalscope-gsm8k-hip67-full/20261016_212057
