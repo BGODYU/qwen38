@@ -278,20 +278,15 @@ baseline 启动参数的差异集中在四处。以下逐项说明做了什么�
 
 **逐项说明：**
 
-- **GSM8K** — 全量 1319 题，`limit: null`，1319/1319 成功、0 错误。
-  4-shot CoT，Avg Lat 22.912s，Avg 输出吞吐 15.57 tok/s，Avg In 689 tok / Avg Out 357 tok。
+- **GSM8K** — 全量 1319 题，`limit: null`，1319/1319 成功、0 错误，4-shot CoT，**97.42%**。
   原始报告：[`gsm8k.json`](result/accuracy/gsm8k/reports/Qwen3.8-27B-INT8-TP2-Eval/gsm8k.json)。
-- **RealWorldQA** — `limit: 50`，0-shot，Avg Lat 31.646s，Avg 吞吐 7.18 tok/s。
+- **RealWorldQA** — `limit: 50`，0-shot，**88.00%**。
   原始报告：[`real_world_qa.json`](result/accuracy/realworldqa/reports/Qwen3.8-27B-INT8-TP2-Eval/real_world_qa.json)。
 - **MathVision** — `limit: 4` × 5 level = 20 题，20/20 成功、0 错误。
   OVERALL **60%**（L1 25% / L2 100% / L3 50% / L4 100% / L5 25%）。
-  Avg Lat 311.01s，Avg 输出吞吐 12.31 tok/s，Avg In 608 tok / Avg Out 3828 tok。
   原始报告：[`math_vision.json`](result/accuracy/mathvision/reports/Qwen3.8-27B-INT8-TP2-Eval/math_vision.json)。
-- **LiveCodeBench v6** — `pass@1` 与 `accuracy` 均为 80%（50 题）。
-  数据来自评测终端 report table（[`screenshots/lcb.png`](result/accuracy/screenshots/lcb.png)），
-  单题耗时较长（Avg Lat 689.933s，输出 3553 tok，5.15 tok/s）。
-  截图同时确认该次评测正常完成
-  （`Benchmark live_code_bench evaluation finished`）。
+- **LiveCodeBench v6** — 50 题，`pass@1` 与 `accuracy` 均为 **80%**。
+  数据来自评测终端 report table（[`screenshots/lcb.png`](result/accuracy/screenshots/lcb.png)）。
 
 ### 4.2 与"降幅 ≤ 2pp"要求的关系
 
