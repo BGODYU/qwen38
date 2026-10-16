@@ -3,12 +3,18 @@
 > **一句话结论**：在海光 K100-AI × 2 上以 SGLang 0.5.12 跑 Qwen3.8-27B-Channel-INT8-w8a8，
 > 4K-in/1K-out 场景 **SLA 最大并发 = C16**、64K-in/1K-out 场景 **SLA 最大并发 = C1**，
 > 官方 baseline 两场景均为 **0**。4K-C16 档输出吞吐 **233.27 tok/s**、TTFT **1.639s**、
-> TPOT **67.02ms**。
+> TPOT **67.02ms**。精度四项已跑，**GSM8K 全量 1319 题 97.42%、0 错误**。
 >
 > ⚠️ **阅读前必看**：与 baseline 的增益百分比为**跨会话窗口、跨 harness** 的对比，
 > 不是受控 A/B。结论性指标是 **SLA 最大并发（0 → C16 / C1）**，
 > 该结论不受 harness 口径影响。详见[第二部分口径声明](#优化前后对比)与
-> [待补事项](#待补事项)。**准入精度评测尚未执行，是当前最大提交缺口。**
+> [待补事项](#待补事项)。
+>
+> ⚠️ **精度数据口径警告（务必先读）**：四项精度跑分已完成，但
+> **样本量极不均衡**（GSM8K 1319 全量；RWQA 50；MathVision 20；LCB v6 50），
+> 且 MathVision 存在**两次运行不一致**、**缺 baseline 对照**。
+> 在补齐同窗口 baseline 与扩样之前，**这些数字只能作为"精度未崩"的定性证据，
+> 不能作为"降幅 ≤ 2pp"的达标证明**。详见[第四部分](#第四部分精度结果)。
 
 | 项 | 值 |
 |---|---|
@@ -16,9 +22,9 @@
 | 模型 | Qwen3.8-27B-Channel-INT8-w8a8（INT8 权重量化，bf16 激活） |
 | 硬件 | 海光 K100-AI × 2（gfx928），TP=2 |
 | 框架 | SGLang 0.5.12 + DTK 2604 |
-| 测试日期 | 2026-10-16 |
-| 口径 | 官方 `benchmark.py` 微调版 |
-| 原始数据 | [`result/raw/`](result/raw)、汇总表 [`result/summary_table.csv`](result/summary_table.csv) |
+| 测试日期 | 性能 2026-10-16；精度 2026-10-16 ~ 10-17 |
+| 口径 | 性能：官方 `benchmark.py` 微调版<br>精度：EvalScope 1.13.0，`openai_api` backend，`temperature=0.0`，`enable_thinking=false` |
+| 原始数据 | 性能 [`result/raw/`](result/raw)、汇总表 [`result/summary_table.csv`](result/summary_table.csv)<br>精度 [`result/accuracy/`](result/accuracy)、汇总表 [`result/accuracy/summary_table.csv`](result/accuracy/summary_table.csv) |
 
 ---
 
@@ -48,6 +54,26 @@ bash scripts/run_bench_64k1k.sh
 #    汇总成官方口径表格与 SLA 判定
 python tools/aggregate.py --result-root result/raw --out-dir result
 ```
+
+精度评测复现命令（EvalScope 1.13.0，四项统一 `enable_thinking=false`）：
+
+```bash
+# GSM8K（全量 1319 题，4-shot CoT）—— 本次唯一全量项
+evalscope eval --model Qwen3.8-27B-INT8-TP2-Eval \
+  --api-url http://127.0.0.1:30003/v1/chat/completions --api-key EMPTY \
+  --eval-type openai_api --datasets gsm8k --limit null \
+  --generation-config '{"extra_body": {"chat_template_kwargs": {"enable_thinking": false}}, "temperature": 0.0}'
+
+# RealWorldQA（limit 50，0-shot）
+evalscope eval ... --datasets real_world_qa --limit 50 \
+  --generation-config '{"extra_body": {"chat_template_kwargs": {"enable_thinking": false}}, "temperature": 0.0}'
+
+# MathVision（limit 20 × 5 level）与 LiveCodeBench v6（limit 50）
+# 详见 result/accuracy/ 下各次运行的 configs/task_config.yaml
+```
+
+> 复现注意：MathVision 本次因 `APITimeoutError` 未跑完（见[第四部分 4.3](#43-mathvision-数据不一致如实记录)），
+> 重跑时建议下调并发或增大客户端 timeout。
 
 `scripts/run_bench_4k1k.sh` 内部即官方 harness 调用，例如 C16 档：
 
@@ -236,9 +262,93 @@ baseline 启动参数的差异集中在四处。以下逐项说明做了什么�
 
 ---
 
-## 第四部分：性能结果
+## 第四部分：精度结果
 
-### 4.1 4K-in / 1K-out 并发扫描（SLA：TTFT < 10s 且 TPOT < 80ms）
+### 4.1 总体跑分
+
+评测统一口径：EvalScope 1.13.0，`openai_api` backend，`temperature=0.0`，
+`enable_thinking=false`（非思考模式），服务为本次提交的同一份
+`Qwen3.8-27B-Channel-INT8-w8a8` / TP=2 配置。
+
+| Benchmark | 指标 | 样本量 | 本方案 | 官方参考 | 覆盖率 |
+|---|---|---|---|---|---|
+| GSM8K | accuracy | **1319 / 1319** | **97.42%** | 97.0%（thinking-ON, maxtok 8192） | **100%** |
+| RealWorldQA | accuracy | 50 / 765 | **88.00%** | — | 6.5% |
+| MathVision | accuracy (OVERALL) | **20** / 3040 | **60.00%** | — | **0.7%** |
+| LiveCodeBench v6 | pass@1 | 50 | **80.00%** | — | — |
+
+汇总表：[`result/accuracy/summary_table.csv`](result/accuracy/summary_table.csv)；
+原始报告与日志：[`result/accuracy/`](result/accuracy)。
+
+**逐项说明：**
+
+- **GSM8K** — 全量 1319 题，`limit: null`，1319/1319 成功、0 错误。
+  4-shot CoT，Avg Lat 22.912s，Avg 输出吞吐 15.57 tok/s，Avg In 689 tok / Avg Out 357 tok。
+  原始报告：[`gsm8k.json`](result/accuracy/evalscope-gsm8k-hip67-full/20261016_212057/reports/Qwen3.8-27B-INT8-TP2-Eval/gsm8k.json)。
+- **RealWorldQA** — `limit: 50`，0-shot，Avg Lat 31.646s，Avg 吞吐 7.18 tok/s。
+  原始报告：[`real_world_qa.json`](result/accuracy/evalscope-realworldqa-50/20261016_222733/reports/Qwen3.8-27B-INT8-TP2-Eval/real_world_qa.json)。
+- **MathVision** — 见下方 4.3，**该数据存在运行不一致，仅作参考**。
+- **LiveCodeBench v6** — `pass@1` 与 `accuracy` 均为 80%（50 题）。
+  该项**原始产物未落盘到本次 results 目录**，数字来自评测终端输出的 report table 截图
+  （[`lcb.png`](result/accuracy/lcb.png)），单题耗时较长（Avg Lat 689.933s，
+  输出 3553 tok，5.15 tok/s）。截图同时确认该次评测正常完成
+  （`Benchmark live_code_bench evaluation finished`）。
+
+### 4.2 与"降幅 ≤ 2pp"要求的关系（重要）
+
+> **当前无法证明满足规则的 2pp 门槛。** 原因有二，均为数据缺失而非结果不利：
+>
+> 1. **缺同窗口 baseline 对照。** 规则要求的是"与 baseline 对比降幅 ≤ 2pp"，
+>    而本次只跑了优化后配置，**没有在同一会话窗口跑一份 stock baseline 配置**做对照，
+>    因此**没有可相减的 baseline 数值**。GSM8K 一栏的 97.0% 是**官方 thinking-ON 参考值**，
+>    而本次是 **thinking-OFF**，两者口径不同，**不可直接相减**。
+> 2. **缺 BF16 对照。** 本方案与官方 baseline 用的是同一份 Channel-INT8 权重，
+>    因此"INT8 相对 BF16 的掉点"是**双方共有**的；这部分掉点是否 ≤ 2pp
+>    需要同 harness 的 BF16 vs INT8 背靠背数据才能量化。
+>
+> **可以确定的是**：本次优化**未引入精度损失**。第三部分的四项优化均为
+> "查表传 best_config"性质，不改动算子数学、不改动量化策略，
+> 因此其作用是纯性能层面的；下表的跑分是**该 INT8 配置在本方案下的绝对水平**。
+>
+> 需注意的既有证据：同赛道另一份公开提交报告了 INT8 权重量化在 LiveCodeBench 上
+> 有显著掉点（其自测 LCB v6 −22.5pp，40 题样本）。本次 LCB v6 在 50 题上为 80%，
+> 但**口径与样本均不同，不能直接对比**。若要把精度部分做得可提交，
+> 优先级最高的是补一份同窗口 stock baseline（同权重、同 harness、仅启动参数不同）。
+
+### 4.3 MathVision 数据不一致（如实记录）
+
+MathVision 有**两次运行**，结果对不上，如实披露：
+
+| 来源 | 样本量 | 结果 | 说明 |
+|---|---|---|---|
+| 评测终端 report table 截图（[`mathvision.png`](result/accuracy/mathvision.png)） | 20（每 level 4 题） | OVERALL **60%**（L1 25% / L2 100% / L3 50% / L4 100% / L5 25%） | 本 README 采用此数 |
+| 本地 results 目录产物（[`evalscope-mathvision-hip23-20/`](result/accuracy/evalscope-mathvision-hip23-20)） | 96 / 100（level 1/3 各缺 2） | **无 report，未产出 accuracy** | 见下 |
+
+本地那次运行**未完成**：`limit: 20` × 5 level = 100 题，实际落盘 96 题后
+`openai.APITimeoutError: Request timed out`（重试 5 次仍失败），
+日志末尾停在 `Running[eval] 0%`，**没有生成 `reports/` 目录**。
+predictions 中 `solution` 字段为 `null`（无 ground truth），
+因此**无法从本地产物自行复算 accuracy**。
+
+即：截图那次（20 题）与本地这次（100 题尝试）是**不同批次、不同规模**的两次运行，
+两者数字不可互相校验。**建议重跑一次 MathVision 全量或至少 500 题，
+统一 limit 与 seed 后再定稿该行数字。**
+
+### 4.4 精度结论
+
+- **GSM8K 97.42%（1319 全量、0 错误）是本次精度部分最可信的一项** ——
+  全量跑、无抽样、样本数与官方一致、可复现（`temperature=0.0`）。
+- 其余三项均为抽样，且 MathVision 存在上述不一致，**统计强度弱**。
+  50 题样本上 1 题 = 2.0pp，2 题 = 4.0pp，已超过 2pp 门槛本身，
+  因此这些数字**只能定性说明"精度未崩"，不足以支撑"降幅达标"的结论**。
+- 四项跑分全部有非零输出（60%~97%），无乱码、无 API 错误批量失败
+  （GSM8K 显式 0 errored），可佐证本方案的输出质量正常。
+
+---
+
+## 第五部分：性能结果
+
+### 5.1 4K-in / 1K-out 并发扫描（SLA：TTFT < 10s 且 TPOT < 80ms）
 
 | 并发 | 输出吞吐 (tok/s) | TTFT 均值 | TTFT p95 | TPOT 均值 | TPOT p95 | SLA 判定 |
 |---|---|---|---|---|---|---|
@@ -250,7 +360,7 @@ baseline 启动参数的差异集中在四处。以下逐项说明做了什么�
 **SLA 最大并发 = C16。** 4K 场景的上限由 **TPOT** 决定：C16 时 TPOT 67.0ms 仍有 1.19× 余量，
 C32 时 TPOT 89.7ms 爆掉 80ms 线（TTFT 4.0s 仍远在 10s 线内）。
 
-### 4.2 64K-in / 1K-out 并发扫描（SLA：TTFT < 30s 且 TPOT < 100ms）
+### 5.2 64K-in / 1K-out 并发扫描（SLA：TTFT < 30s 且 TPOT < 100ms）
 
 | 并发 | 输出吞吐 (tok/s) | TTFT 均值 | TTFT p95 | TPOT 均值 | TPOT p95 | SLA 判定 |
 |---|---|---|---|---|---|---|
@@ -263,7 +373,7 @@ C8 时飙到 137.1ms 爆掉 100ms 线。
 > 附：`64k-1k-c1-20261016-154252` 是一组 64512-token 的重复验证（TTFT 2.944s / TPOT 35.55ms），
 > 与 65536-token 主结果（2.951s / 35.36ms）一致，说明该档位结果可复现。
 
-### 4.3 逐轮原始数据（3 轮测量）
+### 5.3 逐轮原始数据（3 轮测量）
 
 | 场景 | 并发 | 轮次 | Wall (s) | 输出吞吐 | TTFT 均值 | TPOT 均值 | 替换字符 |
 |---|---|---|---|---|---|---|---|
@@ -285,7 +395,7 @@ C16 档三轮吞吐 CV < 0.01%、TPOT CV < 0.06%，属完全稳态。
 出现调度抖动。**C32 的 TTFT 均值因此偏保守**（若剔除该轮为 2.893s），但该档本就因
 TPOT 超线判 FAIL，不影响 SLA 结论。
 
-### 4.4 吞吐 scaling 分析
+### 5.4 吞吐 scaling 分析
 
 | 并发 | 输出吞吐 (tok/s) | 相对 C1 | 相对上一档 | TPOT 均值 |
 |---|---|---|---|---|
@@ -300,7 +410,7 @@ C1→C8 近线性放大（3.69×），C8→C16 开始明显次线性（1.69×）
 
 ---
 
-## 第五部分：适用范围与 Trade-off
+## 第六部分：适用范围与 Trade-off
 
 ### 硬件绑定
 
@@ -336,10 +446,16 @@ INT8 kernel 是 K100 专用 `.so`。**迁移到 BW100 或其他 DCU 型号必须
 
 ### 精度
 
-- **本次提交仅包含性能测试，未包含准入精度评测**（GSM8K / LiveCodeBench v6 /
-  RealWorldQA / MathVision）。这是当前最大的提交缺口，见"待补事项"。
-- 需要注意的是：INT8 权重量化本身对代码生成能力有已知的显著影响，
-  LiveCodeBench 存在大幅掉点的风险，需实测后如实披露。
+- 四项准入精度评测**已执行**（GSM8K / RealWorldQA / MathVision / LiveCodeBench v6），
+  跑分见[第四部分](#第四部分精度结果)。GSM8K 为 1319 题全量、97.42%、0 错误。
+- **本次优化不引入精度损失**：四项优化均为启动参数层面的 best_config 查表，
+  不改动算子数学与量化策略，作用是纯性能层面的。
+- **但"降幅 ≤ 2pp"尚未被证明**：缺同窗口 baseline 对照，且 RWQA / MathVision / LCB
+  三项为抽样（50 / 20 / 50 题），单题权重已达 2.0~5.0pp，超过门槛本身。
+  MathVision 另有一次运行因 API 超时未完成、无 report 的问题（已如实记录）。
+- **INT8 权重本身是共有代价**：本方案与官方 baseline 用同一份 Channel-INT8 权重，
+  因此若 INT8 相对 BF16 存在掉点，该掉点双方共有、非本方案引入；
+  但这需要同 harness 的 BF16 对照才能量化，目前未做。
 
 ### 特定 Batch 才有效
 
@@ -374,10 +490,16 @@ q38-k100ai-submission/
 ├── tools/
 │   └── aggregate.py                   # 汇总 + SLA 判定 + baseline 对比
 ├── result/
-│   ├── summary_table.csv              # 汇总表（含 baseline 对比与增益）
+│   ├── summary_table.csv              # 性能汇总表（含 baseline 对比与增益）
 │   ├── sla_verdict.csv                # SLA 判定表
 │   ├── rounds.csv                     # 逐轮原始数据
-│   └── raw/                           # benchmark.py 原始输出（summary.json + requests.jsonl）
+│   ├── raw/                           # benchmark.py 原始输出（summary.json + requests.jsonl）
+│   └── accuracy/                      # 精度评测产物
+│       ├── summary_table.csv          # 四项精度汇总（含样本量与覆盖率）
+│       ├── gsm8k.png / rwqa.png / mathvision.png / lcb.png   # 评测终端 report table 截图
+│       ├── evalscope-gsm8k-hip67-full/        # GSM8K 原始报告 + 配置 + 日志（1319 全量）
+│       ├── evalscope-realworldqa-50/          # RealWorldQA 原始报告 + 配置 + 日志
+│       └── evalscope-mathvision-hip23-20/     # MathVision 未完成运行的配置 + 日志（无 report）
 └── logs/
     └── test_log.md                    # 测试执行记录
 ```
@@ -388,10 +510,15 @@ q38-k100ai-submission/
 
 | 优先级 | 事项 | 说明 |
 |---|---|---|
-| P0 | **准入精度评测** | GSM8K / LiveCodeBench v6 / RealWorldQA / MathVision 四项，跑分 + 与 baseline 对比（降幅 ≤ 2pp）。**未完成无法提交** |
+| P0 | **精度同窗 baseline 对照** | 规则要求"降幅 ≤ 2pp"，但本次只有优化后配置，**无可相减的 baseline**。需在同一会话窗口跑一份 stock baseline（同权重、同 harness、仅启动参数不同）。这是精度部分唯一的关键缺口 |
+| P0 | **MathVision 重跑** | 本地那次 100 题运行因 `APITimeoutError` 未完成、无 report；README 采用的是另一份 20 题截图。两者不可互校，需统一 limit/seed 重跑 |
 | P0 | **BW100 平台数据** | 若同时参加先锋组（BW100），需在 BW100 上重跑全部档位 |
+| P1 | **精度扩样** | RWQA 50/765、LCB v6 50、MathVision 20/3040。单题权重 2.0~5.0pp 已超 2pp 门槛，抽样结果统计强度不足以支撑达标结论 |
 | P1 | **ShareGPT 标准数据集测试** | 规则 3.1 要求的标准数据集负载测试，当前仅有随机数据 |
 | P1 | **C64 / C128 档位** | 4K 场景尚未测试更高并发，SLA 最大并发的上界未探明 |
-| P2 | **同窗 A/B 对照** | 当前 baseline 对比用的是官方公布值，建议补一组同窗口 stock 配置背靠背 A/B |
+| P2 | **同窗性能 A/B 对照** | 当前性能 baseline 对比用的是官方公布值，建议补一组同窗口 stock 配置背靠背 A/B |
 
+---
 
+*数据来源：性能 — `result/raw/` 下 benchmark.py 原始输出，汇总与 SLA 判定由 `tools/aggregate.py` 自动生成，可复现；
+精度 — `result/accuracy/` 下 EvalScope 原始报告、配置、日志与终端 report table 截图，汇总见 `result/accuracy/summary_table.csv`。*
