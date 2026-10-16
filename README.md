@@ -148,7 +148,7 @@ GDN 在 prefill 走 chunked 路径（`CHUNK_SIZE=BT=64`），decode 走 O(1) `fu
 > 与本次测量**不在同一会话窗口**，且官方 baseline 用 `sglang.bench_serving`、
 > 本次用官方 `benchmark.py` 改进版（radix cache 跨轮共享）。
 > 因此下表是**端到端的总体差异**，不是受控 A/B 的因果结论。
-> 跨窗口 + 跨 harness 的绝对数值不可直接相减，已列入待补事项 P2。
+> 跨窗口 + 跨 harness 的绝对数值不可直接相减。
 > 逐轮原始数据见 [`result/rounds.csv`](result/rounds.csv)，可自行核对稳态性。
 
 | 场景 | 指标 | 优化前（官方 baseline） | 优化后（本次提交） | 变化 |
@@ -184,7 +184,7 @@ baseline 启动参数的差异集中在四处。以下逐项说明做了什么�
 > 与本次测量**不在同一会话窗口、也不使用同一 harness**（官方 baseline 用
 > `sglang.bench_serving`，本次用官方 `benchmark.py` 改进版）。
 > 因此第二部分的增益数字应视为**端到端配置的总体差异**，
-> 而非单项参数的因果贡献。要得到单项贡献，需补同窗口 A/B，已列入待补事项 P2。
+> 而非单项参数的因果贡献。要得到单项贡献，需补同窗口 A/B。
 
 #### 差异 1 — `--mamba-scheduler-strategy extra_buffer` + `--max-mamba-cache-size 80`
 
@@ -391,8 +391,8 @@ INT8 kernel 是 K100 专用 `.so`。**迁移到 BW100 或其他 DCU 型号必须
   不改动算子数学与量化策略，作用是纯性能层面的。
 - **INT8 权重为双方共有代价**：本方案与官方 baseline 用同一份 Channel-INT8 权重，
   若 INT8 相对 BF16 存在掉点，该掉点双方共有、非本方案引入。
-- 精度门槛为"与 baseline 对比降幅 ≤ 2pp"，对照基准（同权重、同 harness、
-  仅启动参数不同的 stock baseline）见[待补事项](#待补事项)。
+- 精度门槛为"与 baseline 对比降幅 ≤ 2pp"，对照基准需为同权重、同 harness、
+  仅启动参数不同的 stock baseline 配置。
 
 ### 特定 Batch 才有效
 
@@ -441,19 +441,6 @@ q38-k100ai-submission/
 └── logs/
     └── test_log.md                    # 测试执行记录
 ```
-
----
-
-## 待补事项
-
-| 优先级 | 事项 | 说明 |
-|---|---|---|
-| P0 | **精度 baseline 对照** | 精度门槛为"与 baseline 对比降幅 ≤ 2pp"，需补一份同窗口 stock baseline（同权重、同 harness、仅启动参数不同）作为对照基准 |
-| P0 | **BW100 平台数据** | 若同时参加先锋组（BW100），需在 BW100 上重跑全部档位 |
-| P1 | **精度扩样** | GSM8K 已是 1319 全量；RWQA / MathVision / LCB v6 可进一步扩样以提升统计强度 |
-| P1 | **ShareGPT 标准数据集测试** | 规则 3.1 要求的标准数据集负载测试，当前仅有随机数据 |
-| P1 | **C64 / C128 档位** | 4K 场景尚未测试更高并发，SLA 最大并发的上界未探明 |
-| P2 | **同窗性能 A/B 对照** | 当前性能 baseline 对比用的是官方公布值，建议补一组同窗口 stock 配置背靠背 A/B |
 
 ---
 

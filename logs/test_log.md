@@ -125,5 +125,5 @@ TTFT 54.01s。本次 C16 为 233.27 tok/s、TTFT 1.639s。
 "vs baseline" 的对比在口径上更接近早期那次测量。本报告的 baseline 对比
 按官方公布值直接计算，并已在 README 第五部分标注该口径差异。
 
-> 这一项已列入 README 的"待补事项 P2"：需补一组同窗口、同 harness 的
-> stock 配置背靠背 A/B，用以剥离 harness 方法本身带来的差异。
+> 这一项需补一组同窗口、同 harness 的 stock 配置背靠背 A/B，
+> 用以剥离 harness 方法本身带来的差异。
