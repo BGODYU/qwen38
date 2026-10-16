@@ -90,7 +90,7 @@ python3 -u scripts/benchmark.py \
 --max-running-requests 16       --enable-metrics
 ```
 
-### 启动前置条件（缺一即 fail-fast 退出）
+### 启动前置条件
 
 - runtime patch：`/data/qwen38-27b-k100ai-int8-opt/runtime_patch_tp2/sitecustomize.py`
 - 启动 wrapper：`.../scripts/launch_sglang_require_sitecustomize.py`
