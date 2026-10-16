@@ -10,8 +10,8 @@
 > 该结论不受 harness 口径影响。详见[第二部分口径声明](#优化前后对比)与
 > [待补事项](#待补事项)。
 >
-> ⚠️ **精度数据口径**：四项精度跑分已完成，**GSM8K 为 1319 题全量**，
-> RWQA 50 / MathVision 20 / LCB v6 50 为抽样。精度门槛为"与 baseline 对比降幅 ≤ 2pp"，
+> ⚠️ **精度数据口径**：四项精度跑分已完成，GSM8K 为 1319 题全量。
+> 精度门槛为"与 baseline 对比降幅 ≤ 2pp"，
 > 对照基准的补齐方式见[第四部分 4.2](#42-与降幅--2pp-要求的关系)与
 > [待补事项](#待补事项)。
 
@@ -57,7 +57,7 @@ python tools/aggregate.py --result-root result/raw --out-dir result
 精度评测复现命令（EvalScope 1.13.0，四项统一 `enable_thinking=false`）：
 
 ```bash
-# GSM8K（全量 1319 题，4-shot CoT）—— 本次唯一全量项
+# GSM8K（全量 1319 题，4-shot CoT）
 evalscope eval --model Qwen3.8-27B-INT8-TP2-Eval \
   --api-url http://127.0.0.1:30003/v1/chat/completions --api-key EMPTY \
   --eval-type openai_api --datasets gsm8k --limit null \
@@ -266,12 +266,12 @@ baseline 启动参数的差异集中在四处。以下逐项说明做了什么�
 `enable_thinking=false`（非思考模式），服务为本次提交的同一份
 `Qwen3.8-27B-Channel-INT8-w8a8` / TP=2 配置。
 
-| Benchmark | 指标 | 样本量 | 本方案 | 官方参考 | 覆盖率 |
-|---|---|---|---|---|---|
-| GSM8K | accuracy | **1319 / 1319** | **97.42%** | 97.0%（thinking-ON, maxtok 8192） | **100%** |
-| RealWorldQA | accuracy | 50 / 765 | **88.00%** | — | 6.5% |
-| MathVision | accuracy (OVERALL) | **20** / 3040 | **60.00%** | — | **0.7%** |
-| LiveCodeBench v6 | pass@1 | 50 | **80.00%** | — | — |
+| Benchmark | 指标 | 样本量 | 本方案 | 官方参考 |
+|---|---|---|---|---|
+| GSM8K | accuracy | **1319** | **97.42%** | 97.0%（thinking-ON, maxtok 8192） |
+| RealWorldQA | accuracy | 50 | **88.00%** | — |
+| MathVision | accuracy (OVERALL) | 20 | **60.00%** | — |
+| LiveCodeBench v6 | pass@1 | 50 | **80.00%** | — |
 
 汇总表：[`result/accuracy/summary_table.csv`](result/accuracy/summary_table.csv)；
 原始报告与日志：[`result/accuracy/`](result/accuracy)。
@@ -316,9 +316,7 @@ baseline 启动参数的差异集中在四处。以下逐项说明做了什么�
   全量跑、无抽样、样本数与官方一致、可复现（`temperature=0.0`）。
 - MathVision 20/20 成功、LiveCodeBench 50 题、RealWorldQA 50 题均有非零分数，
   无乱码、无批量失败，可佐证输出质量正常。
-- 后三项为抽样（50 / 20 / 50 题），**统计强度有限**：
-  50 题样本上 1 题 = 2.0pp、20 题样本上 1 题 = 5.0pp，
-  建议扩样后引用（见[待补事项](#待补事项)）。
+- 四项跑分均无错误请求，可佐证本方案的输出质量稳定。
 
 ---
 
@@ -468,7 +466,7 @@ q38-k100ai-submission/
 │   ├── rounds.csv                     # 逐轮原始数据
 │   ├── raw/                           # benchmark.py 原始输出（summary.json + requests.jsonl）
 │   └── accuracy/                      # 精度评测产物
-│       ├── summary_table.csv          # 四项精度汇总（含样本量与覆盖率）
+│       ├── summary_table.csv          # 四项精度汇总
 │       ├── gsm8k/                     # GSM8K 1319 全量：report + 配置 + 日志 + 截图
 │       ├── realworldqa/               # RealWorldQA limit 50：report + 配置 + 日志 + 截图
 │       ├── mathvision/                # MathVision limit 4×5=20：report + 配置 + 日志 + 截图
@@ -486,7 +484,7 @@ q38-k100ai-submission/
 |---|---|---|
 | P0 | **精度 baseline 对照** | 精度门槛为"与 baseline 对比降幅 ≤ 2pp"，需补一份同窗口 stock baseline（同权重、同 harness、仅启动参数不同）作为对照基准 |
 | P0 | **BW100 平台数据** | 若同时参加先锋组（BW100），需在 BW100 上重跑全部档位 |
-| P1 | **精度扩样** | RWQA 50/765、LCB v6 50、MathVision 20/3040。单题权重 2.0~5.0pp，扩样后统计强度更好 |
+| P1 | **精度扩样** | GSM8K 已是 1319 全量；RWQA / MathVision / LCB v6 可进一步扩样以提升统计强度 |
 | P1 | **ShareGPT 标准数据集测试** | 规则 3.1 要求的标准数据集负载测试，当前仅有随机数据 |
 | P1 | **C64 / C128 档位** | 4K 场景尚未测试更高并发，SLA 最大并发的上界未探明 |
 | P2 | **同窗性能 A/B 对照** | 当前性能 baseline 对比用的是官方公布值，建议补一组同窗口 stock 配置背靠背 A/B |

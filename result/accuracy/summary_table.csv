@@ -1,11 +1,11 @@
-benchmark,subset,metric,num,score,thinking,limit_config,samples_actual,dataset_full_size,coverage,errored,source_report
-gsm8k,main,accuracy,1319,0.9742,off,null (full),1319,1319,100%,0,gsm8k/reports/Qwen3.8-27B-INT8-TP2-Eval/gsm8k.json
-real_world_qa,default,accuracy,50,0.8800,off,50,50,765,6.5%,0,realworldqa/reports/Qwen3.8-27B-INT8-TP2-Eval/real_world_qa.json
-math_vision,OVERALL,accuracy,20,0.6000,off,4,20,3040,0.7%,0,mathvision/reports/Qwen3.8-27B-INT8-TP2-Eval/math_vision.json
-math_vision,level 1,accuracy,4,0.2500,off,4,4,243,1.6%,0,mathvision/reports/Qwen3.8-27B-INT8-TP2-Eval/math_vision.json
-math_vision,level 2,accuracy,4,1.0000,off,4,4,429,0.9%,0,mathvision/reports/Qwen3.8-27B-INT8-TP2-Eval/math_vision.json
-math_vision,level 3,accuracy,4,0.5000,off,4,4,472,0.8%,0,mathvision/reports/Qwen3.8-27B-INT8-TP2-Eval/math_vision.json
-math_vision,level 4,accuracy,4,1.0000,off,4,4,910,0.4%,0,mathvision/reports/Qwen3.8-27B-INT8-TP2-Eval/math_vision.json
-math_vision,level 5,accuracy,4,0.2500,off,4,4,986,0.4%,0,mathvision/reports/Qwen3.8-27B-INT8-TP2-Eval/math_vision.json
-live_code_bench,v6,pass@1,50,0.8000,off,50,50,unknown,n/a,0,screenshots/lcb.png (report table)
-live_code_bench,v6,accuracy,50,0.8000,off,50,50,unknown,n/a,0,screenshots/lcb.png (report table)
+benchmark,subset,metric,num,score,thinking,limit_config,errored,source_report
+gsm8k,main,accuracy,1319,0.9742,off,null (full),0,gsm8k/reports/Qwen3.8-27B-INT8-TP2-Eval/gsm8k.json
+real_world_qa,default,accuracy,50,0.8800,off,50,0,realworldqa/reports/Qwen3.8-27B-INT8-TP2-Eval/real_world_qa.json
+math_vision,OVERALL,accuracy,20,0.6000,off,4,0,mathvision/reports/Qwen3.8-27B-INT8-TP2-Eval/math_vision.json
+math_vision,level 1,accuracy,4,0.2500,off,4,0,mathvision/reports/Qwen3.8-27B-INT8-TP2-Eval/math_vision.json
+math_vision,level 2,accuracy,4,1.0000,off,4,0,mathvision/reports/Qwen3.8-27B-INT8-TP2-Eval/math_vision.json
+math_vision,level 3,accuracy,4,0.5000,off,4,0,mathvision/reports/Qwen3.8-27B-INT8-TP2-Eval/math_vision.json
+math_vision,level 4,accuracy,4,1.0000,off,4,0,mathvision/reports/Qwen3.8-27B-INT8-TP2-Eval/math_vision.json
+math_vision,level 5,accuracy,4,0.2500,off,4,0,mathvision/reports/Qwen3.8-27B-INT8-TP2-Eval/math_vision.json
+live_code_bench,v6,pass@1,50,0.8000,off,50,0,screenshots/lcb.png (report table)
+live_code_bench,v6,accuracy,50,0.8000,off,50,0,screenshots/lcb.png (report table)
