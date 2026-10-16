@@ -68,8 +68,8 @@ evalscope eval --model Qwen3.8-27B-INT8-TP2-Eval \
 evalscope eval ... --datasets real_world_qa --limit 50 \
   --generation-config '{"extra_body": {"chat_template_kwargs": {"enable_thinking": false}}, "temperature": 0.0}'
 
-# MathVision（limit 20 × 5 level）与 LiveCodeBench v6（limit 50）
-# 详见 result/accuracy/ 下各次运行的 configs/task_config.yaml
+# MathVision（limit 20 × 5 level）—— 本次未跑完，见第 4.3 节
+# 详见 result/accuracy/mathvision/configs/task_config.yaml 与 realworldqa/configs/task_config.yaml
 ```
 
 > 复现注意：MathVision 本次因 `APITimeoutError` 未跑完（见[第四部分 4.3](#43-mathvision-数据不一致如实记录)），
@@ -284,13 +284,13 @@ baseline 启动参数的差异集中在四处。以下逐项说明做了什么�
 
 - **GSM8K** — 全量 1319 题，`limit: null`，1319/1319 成功、0 错误。
   4-shot CoT，Avg Lat 22.912s，Avg 输出吞吐 15.57 tok/s，Avg In 689 tok / Avg Out 357 tok。
-  原始报告：[`gsm8k.json`](result/accuracy/evalscope-gsm8k-hip67-full/20261016_212057/reports/Qwen3.8-27B-INT8-TP2-Eval/gsm8k.json)。
+  原始报告：[`gsm8k.json`](result/accuracy/gsm8k/reports/Qwen3.8-27B-INT8-TP2-Eval/gsm8k.json)。
 - **RealWorldQA** — `limit: 50`，0-shot，Avg Lat 31.646s，Avg 吞吐 7.18 tok/s。
-  原始报告：[`real_world_qa.json`](result/accuracy/evalscope-realworldqa-50/20261016_222733/reports/Qwen3.8-27B-INT8-TP2-Eval/real_world_qa.json)。
+  原始报告：[`real_world_qa.json`](result/accuracy/realworldqa/reports/Qwen3.8-27B-INT8-TP2-Eval/real_world_qa.json)。
 - **MathVision** — 见下方 4.3，**该数据存在运行不一致，仅作参考**。
 - **LiveCodeBench v6** — `pass@1` 与 `accuracy` 均为 80%（50 题）。
   该项**原始产物未落盘到本次 results 目录**，数字来自评测终端输出的 report table 截图
-  （[`lcb.png`](result/accuracy/lcb.png)），单题耗时较长（Avg Lat 689.933s，
+  （[`screenshots/lcb.png`](result/accuracy/screenshots/lcb.png)），单题耗时较长（Avg Lat 689.933s，
   输出 3553 tok，5.15 tok/s）。截图同时确认该次评测正常完成
   （`Benchmark live_code_bench evaluation finished`）。
 
@@ -321,8 +321,8 @@ MathVision 有**两次运行**，结果对不上，如实披露：
 
 | 来源 | 样本量 | 结果 | 说明 |
 |---|---|---|---|
-| 评测终端 report table 截图（[`mathvision.png`](result/accuracy/mathvision.png)） | 20（每 level 4 题） | OVERALL **60%**（L1 25% / L2 100% / L3 50% / L4 100% / L5 25%） | 本 README 采用此数 |
-| 本地 results 目录产物（[`evalscope-mathvision-hip23-20/`](result/accuracy/evalscope-mathvision-hip23-20)） | 96 / 100（level 1/3 各缺 2） | **无 report，未产出 accuracy** | 见下 |
+| 评测终端 report table 截图（[`screenshots/mathvision.png`](result/accuracy/screenshots/mathvision.png)） | 20（每 level 4 题） | OVERALL **60%**（L1 25% / L2 100% / L3 50% / L4 100% / L5 25%） | 本 README 采用此数 |
+| 本地 results 目录产物（[`mathvision/`](result/accuracy/mathvision)） | 96 / 100（level 1/3 各缺 2） | **无 report，未产出 accuracy** | 见下 |
 
 本地那次运行**未完成**：`limit: 20` × 5 level = 100 题，实际落盘 96 题后
 `openai.APITimeoutError: Request timed out`（重试 5 次仍失败），
@@ -496,10 +496,12 @@ q38-k100ai-submission/
 │   ├── raw/                           # benchmark.py 原始输出（summary.json + requests.jsonl）
 │   └── accuracy/                      # 精度评测产物
 │       ├── summary_table.csv          # 四项精度汇总（含样本量与覆盖率）
-│       ├── gsm8k.png / rwqa.png / mathvision.png / lcb.png   # 评测终端 report table 截图
-│       ├── evalscope-gsm8k-hip67-full/        # GSM8K 原始报告 + 配置 + 日志（1319 全量）
-│       ├── evalscope-realworldqa-50/          # RealWorldQA 原始报告 + 配置 + 日志
-│       └── evalscope-mathvision-hip23-20/     # MathVision 未完成运行的配置 + 日志（无 report）
+│       ├── gsm8k/                     # GSM8K 1319 全量：report.json + 配置 + 日志 + 截图
+│       ├── realworldqa/               # RealWorldQA limit 50：report.json + 配置 + 日志 + 截图
+│       ├── mathvision/                # MathVision 未完成运行：仅配置 + 日志（无 report）
+│       └── screenshots/               # 无本地产物对应的评测截图
+│           ├── mathvision.png         #   20 题那次运行（README 采用此数）
+│           └── lcb.png                #   LCB v6 50 题（原始产物未落盘）
 └── logs/
     └── test_log.md                    # 测试执行记录
 ```
