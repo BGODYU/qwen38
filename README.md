@@ -17,7 +17,7 @@
 | 硬件 | 海光 K100-AI × 2（gfx928），TP=2 |
 | 框架 | SGLang 0.5.12 + DTK 2604 |
 | 测试日期 | 2026-10-16 |
-| 口径 | 官方 `benchmark.py` 改进版（radix cache 跨轮共享），2 轮预热 + 3 轮测量，均值判分 |
+| 口径 | 官方 `benchmark.py` 微调版 |
 | 原始数据 | [`result/raw/`](result/raw)、汇总表 [`result/summary_table.csv`](result/summary_table.csv) |
 
 ---
