@@ -394,6 +394,4 @@ q38-k100ai-submission/
 | P1 | **C64 / C128 档位** | 4K 场景尚未测试更高并发，SLA 最大并发的上界未探明 |
 | P2 | **同窗 A/B 对照** | 当前 baseline 对比用的是官方公布值，建议补一组同窗口 stock 配置背靠背 A/B |
 
----
 
-*数据来源：`result/raw/` 下 benchmark.py 原始输出；汇总与 SLA 判定由 `tools/aggregate.py` 自动生成，可复现。*
