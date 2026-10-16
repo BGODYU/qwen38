@@ -11,7 +11,7 @@
 | 硬件 | 海光 K100-AI × 2（gfx928），TP=2 |
 | 框架 | SGLang 0.5.12 + DTK 2604 |
 | 测试日期 | 性能 2026-10-16；精度 2026-10-16 ~ 10-17 |
-| 口径 | 性能：官方 `benchmark.py` 微调版<br>精度：EvalScope 1.13.0，`openai_api` backend，`temperature=0.0`，`enable_thinking=false` |
+| 口径 | 性能：官方微调版`benchmark.py` <br>精度：EvalScope 1.13.0，`openai_api` backend，`temperature=0.0`，`enable_thinking=false` |
 | 原始数据 | 性能 [`result/raw/`](result/raw)、汇总表 [`result/summary_table.csv`](result/summary_table.csv)<br>精度 [`result/accuracy/`](result/accuracy)、汇总表 [`result/accuracy/summary_table.csv`](result/accuracy/summary_table.csv) |
 
 ---
