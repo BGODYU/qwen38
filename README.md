@@ -282,8 +282,7 @@ baseline 启动参数的差异集中在四处。以下逐项说明做了什么�
   原始报告：[`gsm8k.json`](result/accuracy/gsm8k/reports/Qwen3.8-27B-INT8-TP2-Eval/gsm8k.json)。
 - **RealWorldQA** — `limit: 50`，0-shot，**88.00%**。
   原始报告：[`real_world_qa.json`](result/accuracy/realworldqa/reports/Qwen3.8-27B-INT8-TP2-Eval/real_world_qa.json)。
-- **MathVision** — `limit: 4` × 5 level = 20 题，20/20 成功、0 错误。
-  OVERALL **60%**（L1 25% / L2 100% / L3 50% / L4 100% / L5 25%）。
+- **MathVision** — `limit: 4` × 5 level = 20 题，20/20 成功、0 错误，**60.00%**。
   原始报告：[`math_vision.json`](result/accuracy/mathvision/reports/Qwen3.8-27B-INT8-TP2-Eval/math_vision.json)。
 - **LiveCodeBench v6** — 50 题，`pass@1` 与 `accuracy` 均为 **80%**。
   数据来自评测终端 report table（[`screenshots/lcb.png`](result/accuracy/screenshots/lcb.png)）。
