@@ -1,7 +1,7 @@
 agent_config: null
 analysis_report: false
 api_key: '**********'
-api_url: http://127.0.0.1:30001/v1/chat/completions
+api_url: http://127.0.0.1:30000/v1/chat/completions
 chat_template: null
 collect_perf: true
 dataset_args: {}
@@ -21,7 +21,7 @@ evaluation_identity:
     math_vision:
       cache_source: null
       evaluation_version: v1.1
-      fingerprint: sha256:afa8628dc41b66496b89b1875861096f3efc3ecf0688cca12a6af88ecb63a381
+      fingerprint: sha256:0d27e7963979798f94afc07bb9bcf9a9ce3ee4f0eec09f24190ad819e5f9ad63
   schema_version: 1
 generation_config:
   batch_size: 8
@@ -42,7 +42,7 @@ judge:
   position_swap: auto
   repeats: 1
   strategy: auto
-limit: 20
+limit: 4
 model: Qwen3.8-27B-INT8-TP2-Eval
 model_args: {}
 model_id: Qwen3.8-27B-INT8-TP2-Eval
@@ -98,4 +98,4 @@ stream: null
 timeout: null
 use_cache: null
 use_sandbox: false
-work_dir: /models/lipf/companion/code/results/evalscope-mathvision-hip23-20/20261016_222047
+work_dir: /models/lipf/companion/code/results/evalscope-mathvision-01-20-v2/20261017_012422

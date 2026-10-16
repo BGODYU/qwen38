@@ -1,0 +1,276 @@
+{
+    "schema_version": 2,
+    "name": "Qwen3.8-27B-INT8-TP2-Eval@math_vision",
+    "dataset_name": "math_vision",
+    "dataset_pretty_name": "MathVision",
+    "dataset_description": "\n## Overview\n\nMATH-Vision (MATH-V) is a meticulously curated dataset of 3,040 high-quality mathematical problems with visual contexts sourced from real math competitions. It evaluates mathematical reasoning abilities in multimodal settings.\n\n## Task Description\n\n- **Task Type**: Visual Mathematical Reasoning\n- **Input**: Math problem with visual context (diagram, figure, graph)\n- **Output**: Numerical answer or answer choice\n- **Domains**: Competition mathematics with visual elements\n\n## Key Features\n\n- Problems sourced from real mathematical competitions\n- 3,040 high-quality problems with visual contexts\n- Five difficulty levels (1-5) for granular analysis\n- Supports both multiple-choice and free-form answers\n- Includes detailed solutions for reference\n\n## Evaluation Notes\n\n- Default evaluation uses the **test** split\n- Subsets by difficulty: `level 1` through `level 5`\n- Primary metric: **Accuracy** with numeric comparison\n- Free-form answers use \\boxed{} format (without units)\n- Multiple-choice uses CoT prompting with letter answers\n",
+    "model_name": "Qwen3.8-27B-INT8-TP2-Eval",
+    "metrics": [
+        {
+            "identity": {
+                "name": "accuracy",
+                "aggregation": "mean",
+                "dimensions": {}
+            },
+            "legacy_name": null,
+            "num": 20,
+            "score": 0.6,
+            "macro_score": 0.6,
+            "categories": [
+                {
+                    "name": [
+                        "default"
+                    ],
+                    "num": 20,
+                    "score": 0.6,
+                    "macro_score": 0.6,
+                    "subsets": [
+                        {
+                            "name": "level 1",
+                            "score": 0.25,
+                            "num": 4,
+                            "is_aggregate": false
+                        },
+                        {
+                            "name": "level 2",
+                            "score": 1.0,
+                            "num": 4,
+                            "is_aggregate": false
+                        },
+                        {
+                            "name": "level 3",
+                            "score": 0.5,
+                            "num": 4,
+                            "is_aggregate": false
+                        },
+                        {
+                            "name": "level 4",
+                            "score": 1.0,
+                            "num": 4,
+                            "is_aggregate": false
+                        },
+                        {
+                            "name": "level 5",
+                            "score": 0.25,
+                            "num": 4,
+                            "is_aggregate": false
+                        }
+                    ]
+                }
+            ],
+            "semantics": {
+                "semantic_id": "quality.accuracy.ratio",
+                "metric_name": "Accuracy",
+                "display_name": null,
+                "kind": "quality",
+                "direction": "higher_is_better",
+                "raw_unit": null,
+                "value_range": {
+                    "min": 0.0,
+                    "max": 1.0
+                },
+                "display_kind": "percent",
+                "display_multiplier": 100.0,
+                "display_unit": "%",
+                "display_precision": 1
+            }
+        }
+    ],
+    "analysis": "N/A",
+    "perf_metrics": {
+        "summary": {
+            "n_samples": 20,
+            "latency": {
+                "mean": 311.008812,
+                "std": 443.403673,
+                "min": 11.196199,
+                "25%": 32.1079,
+                "50%": 86.617529,
+                "75%": 362.81194,
+                "90%": 927.959494,
+                "99%": 1563.904865,
+                "max": 1657.747801
+            },
+            "throughput": {
+                "avg_output_tps": 12.31,
+                "avg_req_ps": 0.0032
+            },
+            "usage": {
+                "input_tokens": {
+                    "mean": 607.8,
+                    "std": 478.129535,
+                    "min": 139.0,
+                    "25%": 226.75,
+                    "50%": 460.0,
+                    "75%": 714.5,
+                    "90%": 1233.5,
+                    "99%": 1807.79,
+                    "max": 1876.0
+                },
+                "output_tokens": {
+                    "mean": 3827.8,
+                    "std": 4411.513938,
+                    "min": 167.0,
+                    "25%": 473.0,
+                    "50%": 1541.0,
+                    "75%": 5772.5,
+                    "90%": 8483.3,
+                    "99%": 15767.18,
+                    "max": 16941.0
+                },
+                "total_tokens": {
+                    "mean": 4435.6,
+                    "std": 4724.497059,
+                    "min": 354.0,
+                    "25%": 1077.0,
+                    "50%": 2224.5,
+                    "75%": 6385.25,
+                    "90%": 8765.5,
+                    "99%": 17574.97,
+                    "max": 18817.0
+                },
+                "total_input_tokens": 12156,
+                "total_output_tokens": 76556,
+                "total_tokens_count": 88712
+            }
+        },
+        "coverage": {
+            "requests_with_metrics": 20,
+            "total_requests": 20
+        },
+        "metric_semantics": {
+            "n_samples": {
+                "semantic_id": "diagnostic.count.items",
+                "metric_name": "Samples",
+                "display_name": null,
+                "kind": "diagnostic",
+                "direction": "none",
+                "raw_unit": null,
+                "value_range": null,
+                "display_kind": "number",
+                "display_multiplier": null,
+                "display_unit": null,
+                "display_precision": 0
+            },
+            "latency": {
+                "semantic_id": "perf.latency.seconds",
+                "metric_name": "Latency",
+                "display_name": null,
+                "kind": "quality",
+                "direction": "lower_is_better",
+                "raw_unit": "s",
+                "value_range": null,
+                "display_kind": "number",
+                "display_multiplier": null,
+                "display_unit": "s",
+                "display_precision": 3
+            },
+            "throughput.avg_output_tps": {
+                "semantic_id": "perf.throughput.tokens_per_second",
+                "metric_name": "Output Throughput",
+                "display_name": null,
+                "kind": "quality",
+                "direction": "higher_is_better",
+                "raw_unit": "tok/s",
+                "value_range": null,
+                "display_kind": "number",
+                "display_multiplier": null,
+                "display_unit": "tok/s",
+                "display_precision": 2
+            },
+            "throughput.avg_req_ps": {
+                "semantic_id": "perf.throughput.requests_per_second",
+                "metric_name": "Request Throughput",
+                "display_name": null,
+                "kind": "quality",
+                "direction": "higher_is_better",
+                "raw_unit": "req/s",
+                "value_range": null,
+                "display_kind": "number",
+                "display_multiplier": null,
+                "display_unit": "req/s",
+                "display_precision": 2
+            },
+            "usage.input_tokens": {
+                "semantic_id": "diagnostic.count.items",
+                "metric_name": "Input Tokens",
+                "display_name": null,
+                "kind": "diagnostic",
+                "direction": "none",
+                "raw_unit": null,
+                "value_range": null,
+                "display_kind": "number",
+                "display_multiplier": null,
+                "display_unit": null,
+                "display_precision": 0
+            },
+            "usage.output_tokens": {
+                "semantic_id": "diagnostic.count.items",
+                "metric_name": "Output Tokens",
+                "display_name": null,
+                "kind": "diagnostic",
+                "direction": "none",
+                "raw_unit": null,
+                "value_range": null,
+                "display_kind": "number",
+                "display_multiplier": null,
+                "display_unit": null,
+                "display_precision": 0
+            },
+            "usage.total_tokens": {
+                "semantic_id": "diagnostic.count.items",
+                "metric_name": "Total Tokens",
+                "display_name": null,
+                "kind": "diagnostic",
+                "direction": "none",
+                "raw_unit": null,
+                "value_range": null,
+                "display_kind": "number",
+                "display_multiplier": null,
+                "display_unit": null,
+                "display_precision": 0
+            }
+        }
+    },
+    "primary_metric_identity": {
+        "name": "accuracy",
+        "aggregation": "mean",
+        "dimensions": {}
+    },
+    "primary_metric_unavailable_reason": null,
+    "judge_summary": null,
+    "execution_summary": {
+        "requested": 20,
+        "succeeded": 20,
+        "errored": 0,
+        "incomplete": false,
+        "subsets": {
+            "level 1": {
+                "requested": 4,
+                "succeeded": 4,
+                "errored": 0
+            },
+            "level 2": {
+                "requested": 4,
+                "succeeded": 4,
+                "errored": 0
+            },
+            "level 3": {
+                "requested": 4,
+                "succeeded": 4,
+                "errored": 0
+            },
+            "level 4": {
+                "requested": 4,
+                "succeeded": 4,
+                "errored": 0
+            },
+            "level 5": {
+                "requested": 4,
+                "succeeded": 4,
+                "errored": 0
+            }
+        }
+    },
+    "num": 20
+}
