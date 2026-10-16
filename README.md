@@ -166,8 +166,8 @@ GDN 在 prefill 走 chunked 路径（`CHUNK_SIZE=BT=64`），decode 走 O(1) `fu
 
 | 场景 | 官方 baseline | 本方案 | 结论 |
 |---|---|---|---|
-| 4K-in/1K-out | 0 | **C16** | 净胜（C16 TTFT 余量 6.1×、TPOT 余量 1.19×；C32 TPOT 爆） |
-| 64K-in/1K-out | 0 | **C1** | 净胜（C1 TTFT 余量 10.2×、TPOT 余量 2.83×；C8 TPOT 爆） |
+| 4K-in/1K-out | 0 | **C16** | C16 TTFT 余量 6.1×、TPOT 余量 1.19×；C32 TPOT 爆 |
+| 64K-in/1K-out | 0 | **C1** | C1 TTFT 余量 10.2×、TPOT 余量 2.83×；C8 TPOT 爆 |
 
 ---
 
