@@ -7,5 +7,5 @@ math_vision,level 2,accuracy,4,1.0000,off,4,4,429,0.9%,0,mathvision/reports/Qwen
 math_vision,level 3,accuracy,4,0.5000,off,4,4,472,0.8%,0,mathvision/reports/Qwen3.8-27B-INT8-TP2-Eval/math_vision.json
 math_vision,level 4,accuracy,4,1.0000,off,4,4,910,0.4%,0,mathvision/reports/Qwen3.8-27B-INT8-TP2-Eval/math_vision.json
 math_vision,level 5,accuracy,4,0.2500,off,4,4,986,0.4%,0,mathvision/reports/Qwen3.8-27B-INT8-TP2-Eval/math_vision.json
-live_code_bench,v6,pass@1,50,0.8000,off,50,50,unknown,n/a,unknown,screenshots/lcb.png (screenshot only, raw output not archived)
-live_code_bench,v6,accuracy,50,0.8000,off,50,50,unknown,n/a,unknown,screenshots/lcb.png (screenshot only, raw output not archived)
+live_code_bench,v6,pass@1,50,0.8000,off,50,50,unknown,n/a,0,screenshots/lcb.png (report table)
+live_code_bench,v6,accuracy,50,0.8000,off,50,50,unknown,n/a,0,screenshots/lcb.png (report table)

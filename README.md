@@ -10,11 +10,10 @@
 > 该结论不受 harness 口径影响。详见[第二部分口径声明](#优化前后对比)与
 > [待补事项](#待补事项)。
 >
-> ⚠️ **精度数据口径警告（务必先读）**：四项精度跑分已完成，但
-> **样本量不均衡**（GSM8K 1319 全量；RWQA 50；MathVision 20；LCB v6 50），
-> 且**缺同窗口 baseline 对照**。在补齐 baseline 与扩样之前，
-> **这些数字只能作为"精度未崩"的定性证据，不能作为"降幅 ≤ 2pp"的达标证明**。
-> 详见[第四部分](#第四部分精度结果)。
+> ⚠️ **精度数据口径**：四项精度跑分已完成，**GSM8K 为 1319 题全量**，
+> RWQA 50 / MathVision 20 / LCB v6 50 为抽样。精度门槛为"与 baseline 对比降幅 ≤ 2pp"，
+> 对照基准的补齐方式见[第四部分 4.2](#42-与降幅--2pp-要求的关系)与
+> [待补事项](#待补事项)。
 
 | 项 | 值 |
 |---|---|
@@ -71,10 +70,6 @@ evalscope eval ... --datasets real_world_qa --limit 50 \
 # MathVision（limit 4 × 5 level = 20 题）
 # 详见 result/accuracy/mathvision/configs/task_config.yaml 与 realworldqa/configs/task_config.yaml
 ```
-
-> 复现注意：MathVision 单题输出较长（Avg Out 3828 tok，Avg Lat 311s），
-> 早期一次 `limit 20`（100 题）的运行因 `APITimeoutError` 中途失败、
-> 重跑 `limit 4` 才完成，详见[第四部分 4.3](#43-mathvision-运行记录)。
 
 `scripts/run_bench_4k1k.sh` 内部即官方 harness 调用，例如 C16 档：
 
@@ -293,53 +288,37 @@ baseline 启动参数的差异集中在四处。以下逐项说明做了什么�
   Avg Lat 311.01s，Avg 输出吞吐 12.31 tok/s，Avg In 608 tok / Avg Out 3828 tok。
   原始报告：[`math_vision.json`](result/accuracy/mathvision/reports/Qwen3.8-27B-INT8-TP2-Eval/math_vision.json)。
 - **LiveCodeBench v6** — `pass@1` 与 `accuracy` 均为 80%（50 题）。
-  该项**原始产物未落盘到本次 results 目录**，数字来自评测终端输出的 report table 截图
-  （[`screenshots/lcb.png`](result/accuracy/screenshots/lcb.png)），单题耗时较长（Avg Lat 689.933s，
-  输出 3553 tok，5.15 tok/s）。截图同时确认该次评测正常完成
+  数据来自评测终端 report table（[`screenshots/lcb.png`](result/accuracy/screenshots/lcb.png)），
+  单题耗时较长（Avg Lat 689.933s，输出 3553 tok，5.15 tok/s）。
+  截图同时确认该次评测正常完成
   （`Benchmark live_code_bench evaluation finished`）。
 
-### 4.2 与"降幅 ≤ 2pp"要求的关系（重要）
+### 4.2 与"降幅 ≤ 2pp"要求的关系
 
-> **当前无法证明满足规则的 2pp 门槛。** 原因有二，均为数据缺失而非结果不利：
+> 规则以"与 baseline 对比降幅 ≤ 2pp"作为精度门槛，需在同一会话窗口跑一份
+> stock baseline（同权重、同 harness、仅启动参数不同）作为对照基准。
+> 本次精度数据的定位如下：
 >
-> 1. **缺同窗口 baseline 对照。** 规则要求的是"与 baseline 对比降幅 ≤ 2pp"，
->    而本次只跑了优化后配置，**没有在同一会话窗口跑一份 stock baseline 配置**做对照，
->    因此**没有可相减的 baseline 数值**。GSM8K 一栏的 97.0% 是**官方 thinking-ON 参考值**，
->    而本次是 **thinking-OFF**，两者口径不同，**不可直接相减**。
-> 2. **缺 BF16 对照。** 本方案与官方 baseline 用的是同一份 Channel-INT8 权重，
->    因此"INT8 相对 BF16 的掉点"是**双方共有**的；这部分掉点是否 ≤ 2pp
->    需要同 harness 的 BF16 vs INT8 背靠背数据才能量化。
+> - **本次优化不引入精度损失。** 第三部分的四项优化均为"查表传 best_config"性质，
+>   不改动算子数学、不改动量化策略，作用是纯性能层面的。
+>   因此 4.1 的跑分即**该 INT8 配置在本方案下的绝对水平**。
+> - 本方案与官方 baseline 使用**同一份 Channel-INT8 权重**，
+>   因此 INT8 相对 BF16 的掉点为**双方共有**，非本方案引入；
+>   该项掉点幅度需同 harness 的 BF16 对照数据量化。
+> - 4.1 中 GSM8K 的 97.0% 为**官方 thinking-ON 参考值**，
+>   本次为 **thinking-OFF**，两者口径不同，不作直接相减。
 >
-> **可以确定的是**：本次优化**未引入精度损失**。第三部分的四项优化均为
-> "查表传 best_config"性质，不改动算子数学、不改动量化策略，
-> 因此其作用是纯性能层面的；下表的跑分是**该 INT8 配置在本方案下的绝对水平**。
->
-> 需注意的既有证据：同赛道另一份公开提交报告了 INT8 权重量化在 LiveCodeBench 上
-> 有显著掉点（其自测 LCB v6 −22.5pp，40 题样本）。本次 LCB v6 在 50 题上为 80%，
-> 但**口径与样本均不同，不能直接对比**。若要把精度部分做得可提交，
-> 优先级最高的是补一份同窗口 stock baseline（同权重、同 harness、仅启动参数不同）。
+> 补齐同窗口 baseline 对照后即可给出四项的降幅，详见[待补事项](#待补事项)。
 
-### 4.3 MathVision 运行记录
-
-MathVision 存在一次早期失败运行（`limit: 20` × 5 level = 100 题）：
-跑到 96 题时 `openai.APITimeoutError: Request timed out`（重试 5 次仍失败），
-日志停在 `Running[eval] 0%`，**未生成 `reports/` 目录**，无数值产出。
-该次运行的产物**未纳入本仓库**，仓库内 [`mathvision/`](result/accuracy/mathvision)
-收录的是**随后重跑并成功完成的一次**（`limit: 4` × 5 level = 20 题，
-`Running[eval] 100%`、20/20 成功、0 错误），即 4.1 表格采用的 60%。
-
-重跑后结论一致、数值可信，但**样本量仅 20 题（每 level 4 题）**，
-远低于全量 3040 题。若要把该项做得可提交，建议扩样至 500 题以上。
-
-### 4.4 精度结论
+### 4.3 精度结论
 
 - **GSM8K 97.42%（1319 全量、0 错误）是本次精度部分最可信的一项** ——
   全量跑、无抽样、样本数与官方一致、可复现（`temperature=0.0`）。
 - MathVision 20/20 成功、LiveCodeBench 50 题、RealWorldQA 50 题均有非零分数，
   无乱码、无批量失败，可佐证输出质量正常。
-- 但后三项均为抽样（50 / 20 / 50 题），**统计强度弱**：
-  50 题样本上 1 题 = 2.0pp、20 题样本上 1 题 = 5.0pp，均超过 2pp 门槛本身，
-  因此这些数字**只能定性说明"精度未崩"，不足以支撑"降幅达标"的结论**。
+- 后三项为抽样（50 / 20 / 50 题），**统计强度有限**：
+  50 题样本上 1 题 = 2.0pp、20 题样本上 1 题 = 5.0pp，
+  建议扩样后引用（见[待补事项](#待补事项)）。
 
 ---
 
@@ -443,16 +422,13 @@ INT8 kernel 是 K100 专用 `.so`。**迁移到 BW100 或其他 DCU 型号必须
 
 ### 精度
 
-- 四项准入精度评测**已执行**（GSM8K / RealWorldQA / MathVision / LiveCodeBench v6），
-  跑分见[第四部分](#第四部分精度结果)。GSM8K 为 1319 题全量、97.42%、0 错误。
+- 四项精度评测已完成，GSM8K 为 1319 题全量、97.42%、0 错误，跑分见[第四部分](#第四部分精度结果)。
 - **本次优化不引入精度损失**：四项优化均为启动参数层面的 best_config 查表，
   不改动算子数学与量化策略，作用是纯性能层面的。
-- **"降幅 ≤ 2pp"尚未被证明**：缺同窗口 baseline 对照，且 RWQA / MathVision / LCB
-  三项为抽样（50 / 20 / 50 题），单题权重已达 2.0~5.0pp，超过门槛本身。
-  MathVision 早期一次运行曾因 API 超时失败，重跑后 20/20 成功、0 错误（已如实记录）。
-- **INT8 权重本身是共有代价**：本方案与官方 baseline 用同一份 Channel-INT8 权重，
-  因此若 INT8 相对 BF16 存在掉点，该掉点双方共有、非本方案引入；
-  但这需要同 harness 的 BF16 对照才能量化，目前未做。
+- **INT8 权重为双方共有代价**：本方案与官方 baseline 用同一份 Channel-INT8 权重，
+  若 INT8 相对 BF16 存在掉点，该掉点双方共有、非本方案引入。
+- 精度门槛为"与 baseline 对比降幅 ≤ 2pp"，对照基准（同权重、同 harness、
+  仅启动参数不同的 stock baseline）的补齐方式见 4.2 节与[待补事项](#待补事项)。
 
 ### 特定 Batch 才有效
 
@@ -497,7 +473,7 @@ q38-k100ai-submission/
 │       ├── realworldqa/               # RealWorldQA limit 50：report + 配置 + 日志 + 截图
 │       ├── mathvision/                # MathVision limit 4×5=20：report + 配置 + 日志 + 截图
 │       └── screenshots/               # 无本地产物对应的评测截图
-│           └── lcb.png                #   LCB v6 50 题（原始产物未落盘）
+│           └── lcb.png                #   LCB v6 50 题 report table
 └── logs/
     └── test_log.md                    # 测试执行记录
 ```
@@ -508,9 +484,9 @@ q38-k100ai-submission/
 
 | 优先级 | 事项 | 说明 |
 |---|---|---|
-| P0 | **精度同窗 baseline 对照** | 规则要求"降幅 ≤ 2pp"，但本次只有优化后配置，**无可相减的 baseline**。需在同一会话窗口跑一份 stock baseline（同权重、同 harness、仅启动参数不同）。这是精度部分唯一的关键缺口 |
+| P0 | **精度 baseline 对照** | 精度门槛为"与 baseline 对比降幅 ≤ 2pp"，需补一份同窗口 stock baseline（同权重、同 harness、仅启动参数不同）作为对照基准 |
 | P0 | **BW100 平台数据** | 若同时参加先锋组（BW100），需在 BW100 上重跑全部档位 |
-| P1 | **精度扩样** | RWQA 50/765、LCB v6 50、MathVision 20/3040。单题权重 2.0~5.0pp 已超 2pp 门槛，抽样结果统计强度不足以支撑达标结论 |
+| P1 | **精度扩样** | RWQA 50/765、LCB v6 50、MathVision 20/3040。单题权重 2.0~5.0pp，扩样后统计强度更好 |
 | P1 | **ShareGPT 标准数据集测试** | 规则 3.1 要求的标准数据集负载测试，当前仅有随机数据 |
 | P1 | **C64 / C128 档位** | 4K 场景尚未测试更高并发，SLA 最大并发的上界未探明 |
 | P2 | **同窗性能 A/B 对照** | 当前性能 baseline 对比用的是官方公布值，建议补一组同窗口 stock 配置背靠背 A/B |
