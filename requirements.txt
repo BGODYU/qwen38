@@ -1,0 +1,4 @@
+# Benchmark harness 依赖
+# 推理栈（sglang / lightop / aiter / triton / torch）已全部预装在官方镜像内，
+# 无需额外 pip 安装。此处仅列出 harness 与汇总工具用到的第三方库。
+requests>=2.31.0

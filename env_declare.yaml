@@ -1,0 +1,128 @@
+environment:
+  # ---- 硬件 ----
+  gpu:
+    model: K100-AI
+    arch: gfx928
+    count: 2
+    visible_devices: "0,1"
+    interconnect: RCCL P2P (TP2 all-reduce)
+
+  # ---- 软件栈 ----
+  os: Ubuntu 22.04
+  dtk: "2604"
+  python: "3.10"
+
+  # ---- 推理框架 ----
+  framework: sglang
+  framework_version: "0.5.12"
+  attention_backend: fa3
+  mm_attention_backend: fa3
+  tensor_parallel_size: 2
+  dtype: bfloat16
+  kv_cache_dtype: bfloat16
+  allreduce_stream_with_compute: 1
+
+  # ---- 模型 ----
+  model:
+    name: Qwen3.8-27B-Channel-INT8-w8a8
+    quantization: w8a8_int8
+    activation: bf16
+    source: /data1/models/Qwen3.8-27B-Channel-INT8-w8a8
+    mount_path: /tmp/q38-target-model-eval-v2
+    served_model_name: Qwen3.8-27B-INT8-TP2-Eval
+    architecture:
+      layers_total: 64
+      gdn_layers: 48          # gated delta net / linear attention (Mamba-like O(1) state)
+      full_attention_layers: 16
+      hidden_size: 5120
+      vocab_size: 248320
+      dense: true
+
+  # ---- 容器 ----
+  image: harbor.sourcefind.cn:5443/dcu/admin/base/custom:sglang0.5.12-K100AI-qwen3.8-0828
+  container_name: qwen38
+  shm_size: 60g
+  network: host
+  mounts:
+    - /opt/hyhal/:/opt/hyhal/:ro
+    - /data:/data1
+  devices:
+    - /dev/kfd
+    - /dev/dri
+    - /dev/mkfd
+
+  # ---- 服务端口 ----
+  endpoint: http://127.0.0.1:30000
+
+  # ---- 关键启动参数 ----
+  serve_args:
+    page_size: 64
+    mamba_scheduler_strategy: extra_buffer
+    max_mamba_cache_size: 80
+    cuda_graph_bs: [1, 2, 4, 8, 16]
+    disable_piecewise_cuda_graph: true
+    context_length: 65536
+    mem_fraction_static: 0.88
+    chunked_prefill_size: 8192
+    max_prefill_tokens: 16384
+    pack_paged_kv_to_varlen: auto
+    pack_paged_kv_to_varlen_min_q_tokens: 8192
+    pack_paged_kv_to_varlen_min_kv_tokens: 8192
+    max_running_requests: 16
+    enable_metrics: true
+    reasoning_parser: qwen3
+    random_seed: 0
+
+  # ---- INT8 native kernel 注入 ----
+  runtime_patch:
+    sitecustomize: /data/qwen38-27b-k100ai-int8-opt/runtime_patch_tp2/sitecustomize.py
+    launcher: /data/qwen38-27b-k100ai-int8-opt/scripts/launch_sglang_require_sitecustomize.py
+    required_env:
+      - TRITON_JSON_DIR
+      - PYTHONPATH
+      - SGLANG_REQUIRED_SITECUSTOMIZE_PREFIX
+      - SGLANG_Q38_TP2_COMPACT_HEAD_M1
+      - SGLANG_Q38_NATIVE_OUT_GEMV_SO
+
+  # ---- Benchmark ----
+  benchmark:
+    harness: scripts/benchmark.py   # 官方固定 token 基准（改进版：radix cache 跨轮共享）
+    warmup_rounds: 2
+    measure_rounds: 3
+    requests_per_round: "<concurrency>"
+    seed: 20260912
+    timeout_s: 3600
+    ignore_eos: true
+    stream: true
+
+    # 官方 SLA（K100-AI / sglang 子赛道）
+    sla:
+      - scenario: 4K-in/1K-out
+        ttft_max_s: 10
+        tpot_max_ms: 80
+        official_baseline_max_concurrency: 0
+      - scenario: 64K-in/1K-out
+        ttft_max_s: 30
+        tpot_max_ms: 100
+        official_baseline_max_concurrency: 0
+
+  # ---- 测试矩阵（本次已执行）----
+  tested_matrix:
+    - {input_len: 4096,  output_len: 1024, concurrency: 1}
+    - {input_len: 4096,  output_len: 1024, concurrency: 8}
+    - {input_len: 4096,  output_len: 1024, concurrency: 16}
+    - {input_len: 4096,  output_len: 1024, concurrency: 32}
+    - {input_len: 65536, output_len: 1024, concurrency: 1}
+    - {input_len: 65536, output_len: 1024, concurrency: 8}
+
+  test_date: "2026-10-16"
+
+  # ---- 准入精度评测状态 ----
+  accuracy_benchmarks:
+    status: NOT_RUN
+    required:
+      - GSM8K
+      - LiveCodeBench v6
+      - RealWorldQA
+      - MathVision (Without CI)
+    threshold: "降幅 <= 2pp"

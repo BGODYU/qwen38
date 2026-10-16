@@ -1,0 +1,13 @@
+{
+  "base_url": "http://127.0.0.1:30000",
+  "concurrency": 1,
+  "input_len": 65536,
+  "measure_rounds": 3,
+  "model": "Qwen3.8-27B-INT8-TP2-Eval",
+  "output_dir": "/models/lipf/companion/code/results/64k-1k-c1-20261016-151427",
+  "output_len": 1024,
+  "requests_per_round": 1,
+  "seed": 20260912,
+  "timeout": 3600,
+  "warmup_rounds": 2
+}
