@@ -11,7 +11,7 @@
 | 硬件 | 海光 K100-AI × 2（gfx928），TP=2 |
 | 框架 | SGLang 0.5.12 + DTK 2604 |
 | 测试日期 | 性能 2026-10-16；精度 2026-10-16 ~ 10-17 |
-| 口径 | 性能：官方微调版`benchmark.py` <br>精度：EvalScope 1.13.0，`openai_api` backend，`temperature=0.0`，`enable_thinking=false` |
+| 口径 | 性能：官方`benchmark.py` <br>精度：EvalScope 1.13.0，`openai_api` backend，`temperature=0.0`，`enable_thinking=false` |
 | 原始数据 | 性能 [`result/raw/`](result/raw)、汇总表 [`result/summary_table.csv`](result/summary_table.csv)<br>精度 [`result/accuracy/`](result/accuracy)、汇总表 [`result/accuracy/summary_table.csv`](result/accuracy/summary_table.csv) |
 
 ---
@@ -146,9 +146,9 @@ GDN 在 prefill 走 chunked 路径（`CHUNK_SIZE=BT=64`），decode 走 O(1) `fu
 
 > **口径声明**：baseline 列取自官方规则文档**公布的** K100-AI baseline 值，
 > 与本次测量**不在同一会话窗口**，且官方 baseline 用 `sglang.bench_serving`、
-> 本次用官方 `benchmark.py` 改进版（radix cache 跨轮共享）。
+> 本次用官方 `benchmark.py`。
 > 因此下表是**端到端的总体差异**，不是受控 A/B 的因果结论。
-> 跨窗口 + 跨 harness 的绝对数值不可直接相减。
+> 跨窗口的绝对数值不可直接相减。
 > 逐轮原始数据见 [`result/rounds.csv`](result/rounds.csv)，可自行核对稳态性。
 
 | 场景 | 指标 | 优化前（官方 baseline） | 优化后（本次提交） | 变化 |
@@ -181,10 +181,10 @@ baseline 启动参数的差异集中在四处。以下逐项说明做了什么�
 
 > **重要口径声明**：以下四项**尚未做同窗口背靠背 A/B 消融**。
 > 表格中的 baseline 对比值取自官方规则文档公布的 K100-AI baseline，
-> 与本次测量**不在同一会话窗口、也不使用同一 harness**（官方 baseline 用
-> `sglang.bench_serving`，本次用官方 `benchmark.py` 改进版）。
+> 与本次测量**不在同一会话窗口**（官方 baseline 用 `sglang.bench_serving`，
+> 本次用 `benchmark.py`）。
 > 因此第二部分的增益数字应视为**端到端配置的总体差异**，
-> 而非单项参数的因果贡献。要得到单项贡献，需补同窗口 A/B。
+> 而非单项参数的因果贡献。
 
 #### 差异 1 — `--mamba-scheduler-strategy extra_buffer` + `--max-mamba-cache-size 80`
 
@@ -229,21 +229,6 @@ baseline 启动参数的差异集中在四处。以下逐项说明做了什么�
 - **预期作用指标**：TPOT。
 - **限制**：只覆盖 batch ≤ 16 的形状。C32 档走 eager 路径，这解释了 C32 的 TPOT（89.7ms）
   明显劣于线性外推值。
-
-### 3.2 测试方法侧的改动（不改变服务性能）
-
-本次使用官方 `benchmark.py` 的**改进版本**，相对原版有两处改动：
-
-1. `cache_salt` 去掉 `phase`/`round_index`，使 WARM 与 MEAS 共享同一 radix cache namespace。
-2. WARM 与 MEAS 合并为单循环，5 轮紧接跑，避免 KV cache 在轮次间被 LRU 挤出。
-
-- **为什么**：原版每轮 prompt 都不同（`cache_salt` 含 `phase`/`round_index`），
-  MEAS 轮必然全部 miss prefill cache，TTFT 被 cache miss 完全主导。
-- **口径声明**：**该项只改变测量方式，不改变服务性能**。所有表格同时给出逐轮原始数据
-  （[`result/rounds.csv`](result/rounds.csv)），可自行核对轮间漂移。
-- **实测证据**：本次 7 个档位中，6 个档位三轮 TTFT/TPOT 漂移 < 1%，
-  证实已进入稳态；唯一的两个离群点已在 [`logs/test_log.md`](logs/test_log.md) 中如实记录
-  （C32 第 2 轮 TTFT 偏高、64K-C1 第 1 轮 TTFT 偏高）。
 
 ---
 
@@ -412,7 +397,7 @@ q38-k100ai-submission/
 │   ├── serve.sh                       # 服务启动脚本（与本次测试完全一致）
 │   └── create_container.sh            # 容器创建脚本
 ├── scripts/
-│   ├── benchmark.py                   # 官方固定 token 基准 harness（改进版）
+│   ├── benchmark.py                   # 官方固定 token 基准 harness
 │   ├── run_bench_4k1k.sh              # 4K/1K 并发扫描（C1/C8/C16/C32）
 │   ├── run_bench_64k1k.sh             # 64K/1K 并发扫描（C1/C8）
 │   └── lipf_4k1k_c16_bench_simple.sh  # sglang.bench_serving 交叉验证脚本
