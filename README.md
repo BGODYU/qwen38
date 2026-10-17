@@ -416,7 +416,8 @@ q38-k100ai-submission/
 │       └── screenshots/               # 无本地产物对应的评测截图
 │           └── lcb.png                #   LCB v6 50 题 report table
 └── logs/
-    └── test_log.md                    # 测试执行记录
+    ├── server_startup_1016.log         # 服务启动日志（2026-10-16 13:52 起，169 行未截断）
+    └── test_log.md                     # 测试执行记录
 ```
 
 ---
