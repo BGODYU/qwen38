@@ -1,0 +1,4 @@
+dataset,concurrency,requests_per_round,measured_rounds,requests_scored,output_tps_median,output_tps_min,output_tps_max,ttft_mean_ms_median,ttft_p99_ms_max,tpot_mean_ms_median,tpot_p99_ms_max,duration_s_median,source_dir
+sharegpt,1,100,3,300,34.41,33.17,34.41,626.93,7052.13,24.55,26.28,566.61,c1
+sharegpt,4,150,3,450,62.44,61.11,62.73,689.52,3861.99,56.88,114.55,459.66,c4
+sharegpt,16,200,3,600,149.25,143.44,149.90,856.29,3367.28,90.88,197.55,262.82,c16

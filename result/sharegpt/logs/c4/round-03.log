@@ -1,0 +1,76 @@
+/usr/local/lib/python3.10/dist-packages/numpy/core/getlimits.py:549: UserWarning: The value of the smallest subnormal for <class 'numpy.float64'> type is zero.
+  setattr(self, word, getattr(machar, word).flat[0])
+/usr/local/lib/python3.10/dist-packages/numpy/core/getlimits.py:89: UserWarning: The value of the smallest subnormal for <class 'numpy.float64'> type is zero.
+  return self._float_to_str(self.smallest_subnormal)
+/usr/local/lib/python3.10/dist-packages/numpy/core/getlimits.py:549: UserWarning: The value of the smallest subnormal for <class 'numpy.float32'> type is zero.
+  setattr(self, word, getattr(machar, word).flat[0])
+/usr/local/lib/python3.10/dist-packages/numpy/core/getlimits.py:89: UserWarning: The value of the smallest subnormal for <class 'numpy.float32'> type is zero.
+  return self._float_to_str(self.smallest_subnormal)
+INFO:sglang.srt.layers.quantization.slimquant_w4a8_marlin:[slimquant_w4a8_marlin] requested_backend=auto, resolved_backend=lmslim
+[K100 SGLang W8A8] normalized exact ignore semantics active
+[K100 SGLang sparse W8A8 cache] installed: exact cache hit unchanged; missing M/N/K -> best_config=None
+[K100 SGLang GDN QKVZ+BA W8A8] installed: M1 fused; non-M1 stock fallback
+[K100 SGLang SwiGLU->INT8] installed exact M1; non-M1 stock fallback
+[K100 SGLang RMS->GDN INT8] installed on 48 linear-attention layers; full-attention input norms stock
+[K100 SGLang native out GEMV] installed from /data/qwen38-27b-k100ai-int8-opt/native_ext/k100_int8_gemv_v7_sglang.so; non-M1/other shapes stock
+[K100 SGLang native body GEMV] installed from /data/qwen38-27b-k100ai-int8-opt/native_ext/k100_int8_gemv_generic_v2_sglang.so; families=['full_qkv', 'gate_up']; other shapes inherit U004/stock
+[K100 SGLang native GDN split] installed from /data/qwen38-27b-k100ai-int8-opt/native_ext/k100_int8_gemv_generic_v2_sglang.so; only exact TP1/M1 prequantized GDN path intercepted
+[K100 SGLang deep down GEMV] installed from /data/qwen38-27b-k100ai-int8-opt/native_ext/k100_int8_gemv_deep_v4_sglang.so; only M1 K17408->N5120 intercepted
+[K100 SGLang U019 K5120 full5] installed from /data/qwen38-27b-k100ai-int8-opt/native_ext/k100_int8_gemv_k5120_full5_sglang.so; gate_up/full_qkv/GDN-QKVZ exact M1 only
+[K100 SGLang U022 K5120 LDS-x] installed from /data/qwen38-27b-k100ai-int8-opt/native_ext/k100_int8_gemv_k5120_ldsx_v1_sglang.so; gate_up/full_qkv/GDN-QKVZ exact M1 only
+[K100 SGLang TP2 K5120 LDS-x] installed from /data/qwen38-27b-k100ai-int8-opt/native_ext/k100_int8_gemv_k5120_ldsx_v1_sglang.so; rank-local shapes only; all others inherit U022/stock
+[K100 SGLang TP2 compact head] installed; shortlist candidate, native TP gather preserved
+[K100 SGLang TP2 row LDS-x] installed from /data/qwen38-27b-k100ai-int8-opt/native_ext/k100_int8_gemv_tp2_row_ldsx_v1_sglang.so; exact rank-local shapes only
+[K100 SGLang TP2 gfx928 paged repair] installed selective consumer: paged-varlen=Triton fallback, pack path may use native contiguous varlen, with-kvcache/decode=native
+[K100 TP2 production shared scale v1] installed: corrected row-LDSx parent; both-family prefill/mixed shared; request-aware first-decode row mask; first-decode eager once, later decode graph/local fast path preserved
+[K100 TP2 shared layer-select v1] installed after production-v1; shared_layers=[32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47]; other target RowParallel layers use local scale
+[K100 DFlash2 TP2 q8split v1] installed after corrected layer-select parent; only batch1 causal q8 is split
+[K100 DFlash2 TP2 longkv BM128 v4] installed after q8split RC1; direct pack hook q8K 32K<=KV<=248K plus exact q3948/KV257900 ceil-causal tail QH12/KVH2/D256 BF16; all other shapes parent fallback
+[K100 DFlash2 TP2 longkv BM128 v5] installed: v4 prefill/qtail preserved; exact batch1 causal q8 verifier uses raw paged_attention; all else parent fallback
+benchmark_args=Namespace(backend='sglang-oai', base_url='http://127.0.0.1:18580', host='0.0.0.0', port=None, ready_check_timeout_sec=60, dataset_name='sharegpt', dataset_path='/dataset/ShareGPT_V3_unfiltered_cleaned_split.json', model='/model', served_model_name='qwen38-bf16', tokenizer=None, num_prompts=150, sharegpt_output_len=None, sharegpt_context_len=131072, random_input_len=1024, random_output_len=1024, random_range_ratio=0.0, image_count=1, image_resolution='1080p', random_image_count=False, image_format='jpeg', image_content='random', request_rate=inf, use_trace_timestamps=False, max_concurrency=4, output_file='/bench/results/sharegpt-c4/round-03.jsonl', output_details=True, print_requests=False, disable_tqdm=True, disable_stream=False, return_logprob=False, top_logprobs_num=0, token_ids_logprob=None, logprob_start_len=-1, return_routed_experts=False, seed=20260912, disable_ignore_eos=False, extra_request_body=None, apply_chat_template=False, profile=False, plot_throughput=False, profile_activities=['CPU', 'GPU'], profile_start_step=None, profile_steps=None, profile_num_steps=None, profile_by_stage=False, profile_stages=None, profile_output_dir=None, profile_prefix=None, lora_name=None, lora_request_distribution='uniform', lora_zipf_alpha=1.5, prompt_suffix='', pd_separated=False, profile_prefill_url=None, profile_decode_url=None, flush_cache=False, warmup_requests=64, tokenize_prompt=False, gsp_num_groups=64, gsp_prompts_per_group=16, gsp_system_prompt_len=2048, gsp_question_len=128, gsp_output_len=256, gsp_range_ratio=1.0, gsp_fast_prepare=False, gsp_send_routing_key=False, gsp_num_turns=1, gsp_ordered=False, mooncake_slowdown_factor=1.0, mooncake_num_rounds=1, mooncake_workload='conversation', fake_prefill=False, tag=None, header=None)
+Waiting up to 60s for http://127.0.0.1:18580/v1/models to become ready...
+Server ready in 0.0s.
+Namespace(backend='sglang-oai', base_url='http://127.0.0.1:18580', host='0.0.0.0', port=30000, ready_check_timeout_sec=60, dataset_name='sharegpt', dataset_path='/dataset/ShareGPT_V3_unfiltered_cleaned_split.json', model='/model', served_model_name='qwen38-bf16', tokenizer=None, num_prompts=150, sharegpt_output_len=None, sharegpt_context_len=131072, random_input_len=1024, random_output_len=1024, random_range_ratio=0.0, image_count=1, image_resolution='1080p', random_image_count=False, image_format='jpeg', image_content='random', request_rate=inf, use_trace_timestamps=False, max_concurrency=4, output_file='/bench/results/sharegpt-c4/round-03.jsonl', output_details=True, print_requests=False, disable_tqdm=True, disable_stream=False, return_logprob=False, top_logprobs_num=0, token_ids_logprob=None, logprob_start_len=-1, return_routed_experts=False, seed=20260912, disable_ignore_eos=False, extra_request_body=None, apply_chat_template=False, profile=False, plot_throughput=False, profile_activities=['CPU', 'GPU'], profile_start_step=None, profile_steps=None, profile_num_steps=None, profile_by_stage=False, profile_stages=None, profile_output_dir=None, profile_prefix=None, lora_name=None, lora_request_distribution='uniform', lora_zipf_alpha=1.5, prompt_suffix='', pd_separated=False, profile_prefill_url=None, profile_decode_url=None, flush_cache=False, warmup_requests=64, tokenize_prompt=False, gsp_num_groups=64, gsp_prompts_per_group=16, gsp_system_prompt_len=2048, gsp_question_len=128, gsp_output_len=256, gsp_range_ratio=1.0, gsp_fast_prepare=False, gsp_send_routing_key=False, gsp_num_turns=1, gsp_ordered=False, mooncake_slowdown_factor=1.0, mooncake_num_rounds=1, mooncake_workload='conversation', fake_prefill=False, tag=None, header=None)
+
+#Input tokens: 52059
+#Output tokens: 28703
+Starting warmup with 64 sequences...
+Warmup completed with 64 sequences. Starting main benchmark run...
+
+============ Serving Benchmark Result ============
+Backend:                                 sglang-oai
+Traffic request rate:                    inf       
+Max request concurrency:                 4         
+Successful requests:                     150       
+Benchmark duration (s):                  459.66    
+Total input tokens:                      52059     
+Total input text tokens:                 52059     
+Total generated tokens:                  28703     
+Total generated tokens (retokenized):    28621     
+Request throughput (req/s):              0.33      
+Input token throughput (tok/s):          113.26    
+Output token throughput (tok/s):         62.44     
+Peak output token throughput (tok/s):    81.00     
+Peak concurrent requests:                6         
+Total token throughput (tok/s):          175.70    
+Concurrency:                             3.95      
+----------------End-to-End Latency----------------
+Mean E2E Latency (ms):                   12118.14  
+Median E2E Latency (ms):                 8659.78   
+P90 E2E Latency (ms):                    32448.19  
+P99 E2E Latency (ms):                    46191.26  
+---------------Time to First Token----------------
+Mean TTFT (ms):                          689.52    
+Median TTFT (ms):                        600.58    
+P99 TTFT (ms):                           2741.83   
+-----Time per Output Token (excl. 1st token)------
+Mean TPOT (ms):                          56.88     
+Median TPOT (ms):                        55.31     
+P99 TPOT (ms):                           111.95    
+---------------Inter-Token Latency----------------
+Mean ITL (ms):                           60.19     
+Median ITL (ms):                         51.47     
+P95 ITL (ms):                            54.99     
+P99 ITL (ms):                            371.35    
+Max ITL (ms):                            4022.81   
+==================================================

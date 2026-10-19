@@ -294,6 +294,30 @@ C1→C8 近线性放大（3.69×），C8→C16 开始明显次线性（1.69×）
 拐点在 C8–C16 之间，对应 GDN 状态池在该区间开始饱和 —— 这与 `max_running_requests 16`
 的配置上限一致，也是 SLA 最大并发恰为 C16 的物理原因。
 
+### 4.5 ShareGPT 标准测试（`sglang.bench_serving`）
+
+> **注**：本节是官方 sglang 标准 benchmark（ShareGPT_V3_unfiltered_cleaned_split.json）
+> 的补充测试，**不计入 SLA 评分**，仅用于与官方 sglang 社区口径下的吞吐与时延对照。
+
+测试口径：`backend=sglang-oai`、`dataset=sharegpt`、`sharegpt_context_len=131072`、
+`num_prompts=100/150/200`、`warmup_requests=64`、`seed=20260912`、3 轮测量取中位数。
+
+| 并发 | 成功请求数 | Input tok | Output tok | 输出吞吐中位 | TTFT 均值中位 | TPOT 均值中位 | 备注 |
+|---|---|---|---|---|---|---|---|
+| C1 | 100 | 35872 | 19498 | **34.41 tok/s** | 0.627 s | 24.55 ms | C1 TPOT 余量 3.26× |
+| C4 | 150 | 52059 | 28703 | **62.44 tok/s** | 0.690 s | 56.88 ms | C4 TPOT 余量 1.41× |
+| **C16** | **200** | **67603** | **39226** | **149.25 tok/s** | **0.856 s** | **90.88 ms** | 4K SLA 红线参照 |
+
+> 共享的 SLA 判定基准用 4K/1K 场景（TTFT < 10s 且 TPOT < 80ms）：
+> C1/C4 两档在 TPOT 上均有充足余量，C16 的 TPOT 90.88 ms 已**超过** 4K 红线 80 ms
+> —— 说明 ShareGPT 长尾 prompt 在 C16 下会比 4K 短 prompt 更早撞 TPOT 线，与 4K-C32 FAIL
+> 的根因一致（GDN 状态池饱和）。
+
+逐轮原始数据见 [`result/sharegpt/rounds.csv`](result/sharegpt/rounds.csv)；
+per-request 数据见 `result/sharegpt/c{1,4,16}/round-{01,02,03}.jsonl`；
+服务侧原始日志见 [`result/sharegpt/logs/`](result/sharegpt/logs)（含 `sharegpt-serve.log` /
+`sharegpt-master.log` / `sharegpt-master.stdout.log` 三份原始服务日志）。
+
 ---
 
 ## 第五部分：适用范围与 Trade-off
@@ -408,6 +432,11 @@ q38-k100ai-submission/
 │   ├── sla_verdict.csv                # SLA 判定表
 │   ├── rounds.csv                     # 逐轮原始数据
 │   ├── raw/                           # benchmark.py 原始输出（summary.json + requests.jsonl）
+│   ├── sharegpt/                      # sglang.bench_serving 标准 ShareGPT 测试（C1/C4/C16 × 3 轮）
+│   │   ├── summary_table.csv          #  汇总表（每档 3 轮中位）
+│   │   ├── rounds.csv                 #  逐轮原始数据
+│   │   ├── c1/c4/c16/                 #  per-request jsonl（round-01/02/03.jsonl）
+│   │   └── logs/                      #  sglang.bench_serving 输出 + master/serve 服务日志
 │   └── accuracy/                      # 精度评测产物
 │       ├── summary_table.csv          # 四项精度汇总
 │       ├── gsm8k/                     # GSM8K 1319 全量：report + 配置 + 日志 + 截图
