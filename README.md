@@ -330,7 +330,7 @@ per-request 数据见 `result/sharegpt/c{1,4,16}/round-{01,02,03}.jsonl`；
 
 | Benchmark | 指标 | 样本量 | 本方案 | 官方参考 |
 |---|---|---|---|---|
-| GSM8K | accuracy | **1319** | **97.42%** | 97.0%（thinking-ON, maxtok 8192） |
+| GSM8K | accuracy | **1319** | **97.42%** | — |
 | RealWorldQA | accuracy | 50 | **88.00%** | — |
 | MathVision | accuracy (OVERALL) | 20 | **60.00%** | — |
 | LiveCodeBench v6 | pass@1 | 50 | **80.00%** | — |
