@@ -1,0 +1,13 @@
+{
+  "base_url": "http://127.0.0.1:30000",
+  "concurrency": 64,
+  "input_len": 4096,
+  "measure_rounds": 3,
+  "model": "Qwen3.8-27B-INT8-TP2-Eval",
+  "output_dir": "results/4k-1k-c64-20261020-090530",
+  "output_len": 1024,
+  "requests_per_round": 64,
+  "seed": 20260912,
+  "timeout": 3600,
+  "warmup_rounds": 2
+}
